@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/AuthContext';
-import { Shield, UploadCloud, User as UserIcon, Activity, Eye, Users, Plus, Search, Edit, Trash2, X, Image as ImageIcon, Settings, Copy, Lock, Link as LinkIcon, MessageSquare, ChevronRight, ArrowLeft, Palette, LogOut, Megaphone, ExternalLink, Globe, CheckCircle, Youtube, Instagram, Phone, Music2, Share2, Mail, Send } from 'lucide-react';
+import { Shield, UploadCloud, User as UserIcon, Activity, Eye, Users, Plus, Search, Edit, Trash2, X, Image as ImageIcon, Settings, Copy, Lock, Link as LinkIcon, MessageSquare, ChevronRight, ArrowLeft, Palette, LogOut, Megaphone, ExternalLink, Globe, CheckCircle, Youtube, Instagram, Phone, Music2, Share2, Mail, Send, Video, FileText } from 'lucide-react';
 import imageCompression from 'browser-image-compression';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from '../utils/cropImage';
@@ -624,22 +624,24 @@ export default function AdminDashboard() {
       setUploadMessage(null);
       try {
           const { error } = await supabase.from('tools').insert([{
-              user_id: user?.id,
+              user_id: pageProfile.id,
               name: uploadForm.name,
               link_url: uploadForm.url,
               image_url: uploadForm.image_url,
               category: uploadForm.type,
               is_media: true,
+              is_public: uploadForm.is_public
           }]);
           if (error) throw error;
           
           setUploadMessage({ text: 'Data uploaded successfully!', type: 'success' });
           fetchTools(pageProfile.id);
+          setUploadStep(4);
           setTimeout(() => {
               setIsUploadModalOpen(false);
               setUploadStep(1);
               setUploadForm({ name: '', type: 'image', url: '', image_url: '', is_public: true });
-          }, 1500);
+          }, 2000);
       } catch (err: any) {
           setUploadMessage({ text: err.message, type: 'error' });
       } finally {
@@ -966,11 +968,15 @@ export default function AdminDashboard() {
                   <span>{uploading ? 'Uploading...' : 'Update Avatar'}</span>
                   <input type="file" className="hidden" accept="image/*" onChange={handleDpUpload} ref={dpInputRef} disabled={uploading} />
                </label>
-               <button onClick={() => activeMainTab === 'tools' ? openToolModal() : openShortLinkModal()} className="flex-1 sm:flex-none justify-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 border border-purple-400/50 text-white text-sm font-medium px-4 md:px-5 py-3 rounded-xl transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:-translate-y-0.5 whitespace-nowrap">
+               <button onClick={() => {
+                    if (activeMainTab === 'tools') openToolModal();
+                    else if (activeMainTab === 'shortlinks') openShortLinkModal();
+                    else setIsUploadModalOpen(true);
+                }} className="flex-1 sm:flex-none justify-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 border border-purple-400/50 text-white text-sm font-medium px-4 md:px-5 py-3 rounded-xl transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:-translate-y-0.5 whitespace-nowrap">
                   <Plus className="w-4 h-4 md:w-5 md:h-5 shrink-0" />
                   {/* Uploads Data Tab Button */}
                   
-                  <span>{activeMainTab === 'tools' ? 'Add Tool' : 'Add Link'}</span>
+                  <span>{activeMainTab === 'tools' ? 'Add Tool' : activeMainTab === 'shortlinks' ? 'Add Link' : 'Add Content'}</span>
                </button>
             </div>
          )}
@@ -2372,6 +2378,182 @@ export default function AdminDashboard() {
                  </form>
              </div>
          </div>
+      )}
+      {/* Data Upload Modal (Step by Step) */}
+      {isUploadModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+              <div className="absolute inset-0 bg-[#050014]/90 backdrop-blur-xl" onClick={() => setIsUploadModalOpen(false)}></div>
+              <div className="relative bg-[#0F0A1F]/95 border border-purple-500/30 w-full max-w-lg flex flex-col shadow-[0_0_50px_rgba(168,85,247,0.2)] rounded-3xl animate-in zoom-in-95 duration-200 overflow-hidden">
+                  <button onClick={() => setIsUploadModalOpen(false)} className="absolute top-5 right-5 z-20 text-zinc-400 hover:text-white p-2 bg-white/5 rounded-full transition-colors">
+                      <X className="w-5 h-5" />
+                  </button>
+
+                  <div className="p-8">
+                      {/* Stepper Header */}
+                      <div className="flex items-center justify-between mb-8 px-4">
+                          {[1, 2, 3].map((s) => (
+                              <div key={s} className="flex items-center flex-1 last:flex-none">
+                                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${uploadStep >= s ? 'bg-purple-600 border-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.5)]' : 'border-zinc-800 text-zinc-600 bg-white/5'}`}>
+                                      {uploadStep > s ? <CheckCircle className="w-5 h-5" /> : s}
+                                  </div>
+                                  {s < 3 && <div className={`h-1 flex-1 mx-2 rounded-full transition-all duration-500 ${uploadStep > s ? 'bg-purple-600' : 'bg-zinc-800'}`}></div>}
+                              </div>
+                          ))}
+                      </div>
+
+                      {uploadMessage && uploadStep !== 4 && (
+                        <div className={`mb-6 p-4 rounded-xl text-sm border ${uploadMessage.type === 'error' ? 'bg-red-500/10 border-red-500/30 text-red-200' : 'bg-green-500/10 border-green-500/30 text-green-200'}`}>
+                          {uploadMessage.text}
+                        </div>
+                      )}
+
+                      {/* Step 1: Select Type */}
+                      {uploadStep === 1 && (
+                          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                              <div className="text-center">
+                                  <h2 className="text-2xl font-bold text-white mb-2">Upload Content</h2>
+                                  <p className="text-zinc-400 text-sm">Select the type of data you want to upload</p>
+                              </div>
+                              <div className="grid grid-cols-2 gap-4">
+                                  {[
+                                      { id: 'image', label: 'Image', icon: ImageIcon, color: 'text-pink-400', bg: 'bg-pink-400/10', border: 'hover:border-pink-500/50' },
+                                      { id: 'video', label: 'Video', icon: Video, color: 'text-blue-400', bg: 'bg-blue-400/10', border: 'hover:border-blue-500/50' },
+                                      { id: 'audio', label: 'Audio', icon: Music2, color: 'text-emerald-400', bg: 'bg-emerald-400/10', border: 'hover:border-emerald-500/50' },
+                                      { id: 'text', label: 'Text/File', icon: FileText, color: 'text-amber-400', bg: 'bg-amber-400/10', border: 'hover:border-amber-500/50' },
+                                  ].map((t) => (
+                                      <button
+                                          key={t.id}
+                                          onClick={() => {
+                                              setUploadForm({...uploadForm, type: t.id});
+                                              setUploadStep(2);
+                                          }}
+                                          className={`group p-6 rounded-2xl border border-white/5 transition-all text-center flex flex-col items-center gap-3 ${uploadForm.type === t.id ? 'bg-white/10 border-purple-500/50 shadow-lg' : 'bg-white/[0.02] ' + t.border}`}
+                                      >
+                                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 ${t.bg} ${t.color}`}>
+                                              <t.icon className="w-6 h-6" />
+                                          </div>
+                                          <span className="text-sm font-semibold text-zinc-300">{t.label}</span>
+                                      </button>
+                                  ))}
+                              </div>
+                          </div>
+                      )}
+
+                      {/* Step 2: Content Details */}
+                      {uploadStep === 2 && (
+                          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                              <div>
+                                  <h2 className="text-xl font-bold text-white mb-1">Details</h2>
+                                  <p className="text-zinc-500 text-xs font-light">Give your content a name and source URL</p>
+                              </div>
+                              <div className="space-y-4">
+                                  <div className="flex flex-col gap-2">
+                                      <label className="text-xs uppercase tracking-widest text-zinc-500 font-bold ml-1">Content Name</label>
+                                      <input 
+                                          type="text" 
+                                          value={uploadForm.name} 
+                                          onChange={e => setUploadForm({...uploadForm, name: e.target.value})}
+                                          className="w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-3.5 outline-none focus:border-purple-500 transition-all"
+                                          placeholder="Enter a descriptive name..."
+                                      />
+                                  </div>
+                                  <div className="flex flex-col gap-2">
+                                      <label className="text-xs uppercase tracking-widest text-zinc-500 font-bold ml-1">Source Link (Cloudinary/Mediafire etc.)</label>
+                                      <input 
+                                          type="url" 
+                                          value={uploadForm.url} 
+                                          onChange={e => setUploadForm({...uploadForm, url: e.target.value})}
+                                          className="w-full bg-black/40 border border-white/10 text-white rounded-xl px-4 py-3.5 outline-none focus:border-purple-500 transition-all"
+                                          placeholder="https://..."
+                                      />
+                                  </div>
+                              </div>
+                              <div className="flex gap-4 pt-4">
+                                  <button onClick={() => setUploadStep(1)} className="flex-1 py-3.5 rounded-xl border border-white/10 text-zinc-400 hover:text-white hover:bg-white/5 transition-all text-sm font-medium">Back</button>
+                                  <button 
+                                      onClick={() => setUploadStep(3)} 
+                                      disabled={!uploadForm.name || !uploadForm.url}
+                                      className="flex-1 py-3.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white transition-all text-sm font-medium shadow-[0_0_15px_rgba(168,85,247,0.3)] disabled:opacity-50"
+                                  >Next Step</button>
+                              </div>
+                          </div>
+                      )}
+
+                      {/* Step 3: Thumbnail & Visibility */}
+                      {uploadStep === 3 && (
+                          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+                              <div>
+                                  <h2 className="text-xl font-bold text-white mb-1">Final Settings</h2>
+                                  <p className="text-zinc-500 text-xs font-light">Set thumbnail and privacy</p>
+                              </div>
+                              <div className="space-y-5">
+                                  <div className="flex flex-col gap-2">
+                                      <label className="text-xs uppercase tracking-widest text-zinc-500 font-bold ml-1">Thumbnail Image URL</label>
+                                      <div className="flex gap-2">
+                                          <input 
+                                              type="url" 
+                                              value={uploadForm.image_url} 
+                                              onChange={e => setUploadForm({...uploadForm, image_url: e.target.value})}
+                                              className="flex-1 bg-black/40 border border-white/10 text-white rounded-xl px-4 py-3 outline-none focus:border-purple-500 transition-all text-sm"
+                                              placeholder="https://image-url.com/thumb.jpg"
+                                          />
+                                          <button 
+                                              type="button" 
+                                              onClick={() => uploadInputRef.current?.click()}
+                                              className="p-3 bg-purple-600/20 border border-purple-500/30 rounded-xl text-purple-400 hover:bg-purple-500/30 transition-all"
+                                          >
+                                              <UploadCloud className="w-5 h-5" />
+                                          </button>
+                                      </div>
+                                      <input type="file" ref={uploadInputRef} className="hidden" accept="image/*" />
+                                  </div>
+
+                                  <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/5">
+                                      <div className="flex items-center gap-3">
+                                          <div className={`p-2 rounded-lg ${uploadForm.is_public ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}`}>
+                                              {uploadForm.is_public ? <Globe className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                                          </div>
+                                          <div>
+                                              <h4 className="text-sm font-bold text-white">{uploadForm.is_public ? 'Public Access' : 'Private Upload'}</h4>
+                                              <p className="text-[10px] text-zinc-500">{uploadForm.is_public ? 'Visible to everyone' : 'Only you can see this'}</p>
+                                          </div>
+                                      </div>
+                                      <label className="relative inline-flex items-center cursor-pointer">
+                                          <input type="checkbox" checked={uploadForm.is_public} onChange={e => setUploadForm({...uploadForm, is_public: e.target.checked})} className="sr-only peer" />
+                                          <div className="w-11 h-6 bg-white/10 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"></div>
+                                      </label>
+                                  </div>
+                              </div>
+                              <div className="flex gap-4 pt-4">
+                                  <button onClick={() => setUploadStep(2)} className="flex-1 py-3.5 rounded-xl border border-white/10 text-zinc-400 hover:text-white hover:bg-white/5 transition-all text-sm font-medium">Back</button>
+                                  <button 
+                                      onClick={saveUpload} 
+                                      disabled={uploadLoading || !uploadForm.image_url}
+                                      className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white transition-all text-sm font-bold shadow-[0_0_20px_rgba(168,85,247,0.4)] flex items-center justify-center gap-2"
+                                  >
+                                      {uploadLoading ? <Activity className="w-5 h-5 animate-spin" /> : 'Finish Upload'}
+                                  </button>
+                              </div>
+                          </div>
+                      )}
+
+                      {/* Step 4: Success Message */}
+                      {uploadStep === 4 && (
+                          <div className="py-8 text-center animate-in zoom-in-95 duration-300">
+                              <div className="w-20 h-20 bg-emerald-500/20 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                                  <CheckCircle className="w-10 h-10" />
+                              </div>
+                              <h2 className="text-2xl font-bold text-white mb-2">Upload Complete!</h2>
+                              <p className="text-zinc-400 text-sm">Your content has been added to your space.</p>
+                              <button 
+                                  onClick={() => setIsUploadModalOpen(false)}
+                                  className="mt-8 px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all text-sm font-medium"
+                              >Close</button>
+                          </div>
+                      )}
+                  </div>
+              </div>
+          </div>
       )}
     </div>
     </div>
