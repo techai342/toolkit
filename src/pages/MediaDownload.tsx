@@ -217,6 +217,13 @@ export default function MediaDownload() {
      try {
          const response = await fetch(apiUrl);
          
+         const contentType = response.headers.get('content-type');
+         if (!contentType || !contentType.includes('application/json')) {
+             const text = await response.text();
+             console.error('Non-JSON response from downloader:', text);
+             throw new Error('Downloader server returned an invalid response.');
+         }
+         
          if (!response.ok) {
              throw new Error(`HTTP error! status: ${response.status}`);
          }
