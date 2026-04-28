@@ -112,6 +112,13 @@ export default function AdminDashboard() {
         body: formData,
       });
 
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await res.text();
+        console.error('Non-JSON response:', text);
+        throw new Error('Server returned an invalid response. Please check your Vercel logs and Environment Variables.');
+      }
+
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Upload failed');
 
@@ -480,6 +487,14 @@ export default function AdminDashboard() {
       
       setMessage({ text: 'Uploading to server...', type: 'success' });
       const response = await fetch('/api/upload', { method: 'POST', body: formData });
+      
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+          const text = await response.text();
+          console.error('Non-JSON response:', text);
+          throw new Error('Server returned HTML instead of JSON. Check Vercel logs/Environment variables.');
+      }
+
       if (!response.ok) throw new Error('Upload failed on server');
       const data = await response.json();
       
@@ -513,6 +528,14 @@ export default function AdminDashboard() {
       formData.append('image', compressedFile, compressedFile.name);
       
       const response = await fetch('/api/upload', { method: 'POST', body: formData });
+      
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+          const text = await response.text();
+          console.error('Non-JSON response:', text);
+          throw new Error('Server error (HTML). Check environment variables on Vercel.');
+      }
+
       if (!response.ok) throw new Error('Upload failed');
       const data = await response.json();
       
@@ -1168,6 +1191,15 @@ export default function AdminDashboard() {
                                  
                                  setMessage({ text: 'Uploading...', type: 'success' });
                                  const response = await fetch('/api/upload-media', { method: 'POST', body: formData });
+                                 
+                                 const contentType = response.headers.get('content-type');
+                                 if (!contentType || !contentType.includes('application/json')) {
+                                      const text = await response.text();
+                                      console.error('Non-JSON response:', text);
+                                      setMessage({ text: 'Server error (HTML returned). Check Vercel logs.', type: 'error' });
+                                      return;
+                                 }
+
                                  const data = await response.json();
                                  if (!response.ok) {
                                       setMessage({ text: data.error || 'Upload failed', type: 'error' });
