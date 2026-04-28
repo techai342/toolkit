@@ -93,6 +93,24 @@ export default function AdminDashboard() {
   const dpInputRef = useRef<HTMLInputElement>(null);
   const bgInputRef = useRef<HTMLInputElement>(null);
 
+  const parseApiResponse = async (res: Response) => {
+    const contentType = res.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      const text = await res.text();
+      console.error('Non-JSON response:', text);
+      if (text.includes('FUNCTION_INVOCATION_FAILED')) {
+        throw new Error('Upload timeout di Vercel. Coba file lebih kecil atau cek Function Duration di Vercel.');
+      }
+      throw new Error('Server returned HTML/non-JSON. Check Vercel function logs and environment variables.');
+    }
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || 'Upload failed on server');
+    }
+    return data;
+  };
+
   const handleBgUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
@@ -112,15 +130,7 @@ export default function AdminDashboard() {
         body: formData,
       });
 
-      const contentType = res.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        const text = await res.text();
-        console.error('Non-JSON response:', text);
-        throw new Error('Server returned an invalid response. Please check your Vercel logs and Environment Variables.');
-      }
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Upload failed');
+      const data = await parseApiResponse(res);
 
       setSettingsForm(prev => ({ ...prev, bg_image_url: data.url }));
       setSettingsMessage({ text: 'Wallpaper uploaded!', type: 'success' });
@@ -487,16 +497,7 @@ export default function AdminDashboard() {
       
       setMessage({ text: 'Uploading to server...', type: 'success' });
       const response = await fetch('/api/upload', { method: 'POST', body: formData });
-      
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-          const text = await response.text();
-          console.error('Non-JSON response:', text);
-          throw new Error('Server returned HTML instead of JSON. Check Vercel logs/Environment variables.');
-      }
-
-      if (!response.ok) throw new Error('Upload failed on server');
-      const data = await response.json();
+      const data = await parseApiResponse(response);
       
       const { error } = await supabase.from('profiles').update({ avatar_url: data.url }).eq('id', user?.id!);
       if (error) throw error;
@@ -528,16 +529,7 @@ export default function AdminDashboard() {
       formData.append('image', compressedFile, compressedFile.name);
       
       const response = await fetch('/api/upload', { method: 'POST', body: formData });
-      
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-          const text = await response.text();
-          console.error('Non-JSON response:', text);
-          throw new Error('Server error (HTML). Check environment variables on Vercel.');
-      }
-
-      if (!response.ok) throw new Error('Upload failed');
-      const data = await response.json();
+      const data = await parseApiResponse(response);
       
       setToolForm(prev => ({ ...prev, image_url: data.url }));
       setToolMessage({ text: 'Image uploaded.', type: 'success' });
