@@ -6,17 +6,25 @@ import path from 'path';
 
 const upload = multer({ storage: multer.memoryStorage() });
 
+const imagekitConfig = {
+  publicKey: process.env.IMAGEKIT_PUBLIC_KEY || 'public_8ulBaGE6HasMRTYenvVihqllUm8=',
+  privateKey: process.env.IMAGEKIT_PRIVATE_KEY || 'private_DBHLVLfKVktC1UhaxnMNjJ++5sc=',
+  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT || 'https://ik.imagekit.io/crv2lglsp',
+};
+
+const cloudinaryConfig = {
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'divloq4oz',
+  api_key: process.env.CLOUDINARY_API_KEY || '999667235587213',
+  api_secret: process.env.CLOUDINARY_API_SECRET || 'hKQ5Q6x6bdJOflp14Nk_S-MGrkw',
+};
+
 const imagekit = new ImageKit({
-  publicKey: process.env.IMAGEKIT_PUBLIC_KEY || '',
-  privateKey: process.env.IMAGEKIT_PRIVATE_KEY || '',
-  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT || '',
+  publicKey: imagekitConfig.publicKey,
+  privateKey: imagekitConfig.privateKey,
+  urlEndpoint: imagekitConfig.urlEndpoint,
 });
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+cloudinary.config(cloudinaryConfig);
 
 export function createApp({ serveStatic = false }: { serveStatic?: boolean } = {}) {
   const app = express();
@@ -28,7 +36,7 @@ export function createApp({ serveStatic = false }: { serveStatic?: boolean } = {
         return res.status(400).json({ error: 'No image file provided' });
       }
 
-      if (!process.env.IMAGEKIT_PUBLIC_KEY || !process.env.IMAGEKIT_PRIVATE_KEY || !process.env.IMAGEKIT_URL_ENDPOINT) {
+      if (!imagekitConfig.publicKey || !imagekitConfig.privateKey || !imagekitConfig.urlEndpoint) {
         return res.status(500).json({ error: 'ImageKit is not configured on server' });
       }
 
@@ -51,7 +59,7 @@ export function createApp({ serveStatic = false }: { serveStatic?: boolean } = {
         return res.status(400).json({ error: 'No file provided' });
       }
 
-      if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      if (!cloudinaryConfig.cloud_name || !cloudinaryConfig.api_key || !cloudinaryConfig.api_secret) {
         return res.status(500).json({ error: 'Cloudinary is not configured on server' });
       }
 
