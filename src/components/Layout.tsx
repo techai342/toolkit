@@ -8,6 +8,11 @@ export default function Layout({ children, customBg }: { children: React.ReactNo
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -24,7 +29,9 @@ export default function Layout({ children, customBg }: { children: React.ReactNo
   const isAdminDashboard = location.pathname.startsWith('/admin');
   const isCustomBg = isPublicView || isAdminDashboard;
 
-  const hideFooter = location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/register' && !location.pathname.startsWith('/admin');
+  const hideFooter = 
+    (location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/register') || 
+    isAdminDashboard;
 
   return (
     <div className={`min-h-screen w-full ${isCustomBg ? 'bg-transparent' : 'bg-[#030014]'} text-[#F0F0F0] font-sans flex flex-col overflow-hidden relative selection:bg-purple-500/30 selection:text-white z-0`}>
@@ -41,34 +48,41 @@ export default function Layout({ children, customBg }: { children: React.ReactNo
       )}
 
       {/* Navigation Bar */}
-      {!isPublicView && (
-      <nav className="flex justify-between items-end mb-12 relative z-10 shrink-0 p-4 sm:p-6 md:p-12 lg:p-16 pb-0 sm:pb-0 md:pb-0 lg:pb-0">
+      <nav className="flex justify-between items-center mb-0 relative z-10 shrink-0 p-4 sm:p-6 md:px-12 lg:px-16 pb-4 sm:pb-4 md:pb-4 lg:pb-4 pt-4 sm:pt-6">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 flex items-center justify-center text-white cursor-pointer shadow-[0_0_15px_rgba(168,85,247,0.4)]" onClick={() => navigate('/')}>
             <Database className="w-5 h-5 text-purple-400" />
           </div>
-          <span className="text-2xl font-black tracking-widest uppercase cursor-pointer text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]" onClick={() => navigate('/')}>
-            SPACE
-          </span>
+          <div className="flex flex-col">
+            <span className="text-xl md:text-2xl font-black tracking-widest uppercase cursor-pointer text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]" onClick={() => navigate('/')}>
+              SPACE
+            </span>
+            <a href="https://t.me/saqibasghar242" target="_blank" rel="noopener noreferrer" className="text-[8px] md:text-[9px] font-mono tracking-widest text-zinc-400 hover:text-white transition-colors cursor-pointer uppercase">
+              Powered by saqib
+            </a>
+          </div>
         </div>
         
-        {user ? (
-          <button 
-            onClick={handleSignOut}
-            className="px-6 py-2.5 rounded-full border border-purple-500/50 bg-purple-500/10 text-[10px] font-bold uppercase tracking-[0.2em] text-white hover:bg-purple-500 hover:shadow-[0_0_20px_rgba(168,85,247,0.6)] transition-all flex items-center gap-2 backdrop-blur-md"
-          >
-            <span className="hidden sm:inline">Terminate Session</span>
-            <span className="sm:hidden">Log Out</span>
-            <LogOut className="w-3 h-3" />
-          </button>
-        ) : (
-          <div className="hidden md:flex gap-8 font-mono text-[10px] lg:text-xs uppercase tracking-widest text-zinc-400">
-            <button onClick={() => navigate('/login')} className="hover:text-purple-400 transition-colors uppercase">Login</button>
-            <button onClick={() => navigate('/register')} className="hover:text-purple-400 transition-colors uppercase">Register</button>
-          </div>
-        )}
+        <div suppressHydrationWarning className="flex items-center">
+          {!mounted ? (
+            <div className="h-9 w-24"></div>
+          ) : user ? (
+            <button 
+              onClick={handleSignOut}
+              className="px-4 py-2 sm:px-6 sm:py-2.5 rounded-full border border-purple-500/50 bg-purple-500/10 text-[10px] font-bold uppercase tracking-[0.2em] text-white hover:bg-purple-500 hover:shadow-[0_0_20px_rgba(168,85,247,0.6)] transition-all flex items-center gap-2 backdrop-blur-md"
+            >
+              <span className="hidden sm:inline">Terminate Session</span>
+              <span className="sm:hidden">Log Out</span>
+              <LogOut className="w-3 h-3" />
+            </button>
+          ) : (
+            <div className="hidden md:flex gap-6 font-mono text-[10px] uppercase tracking-widest text-zinc-400">
+              <button onClick={() => navigate('/login')} className="hover:text-purple-400 transition-colors">Login</button>
+              <button onClick={() => navigate('/register')} className="hover:text-purple-400 transition-colors">Register</button>
+            </div>
+          )}
+        </div>
       </nav>
-      )}
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col relative z-10 w-full max-w-[1400px] mx-auto h-full p-4 sm:p-6 md:p-12 lg:p-16">
@@ -81,8 +95,10 @@ export default function Layout({ children, customBg }: { children: React.ReactNo
         <div className="flex gap-6 md:gap-16">
           <div className="flex flex-col gap-1 md:gap-2">
             <span className="text-[9px] md:text-[10px] font-mono text-zinc-500 uppercase tracking-widest">Connection Status</span>
-            <div className="flex items-center gap-2">
-              {user ? (
+            <div suppressHydrationWarning className="flex items-center gap-2">
+              {!mounted ? (
+                <div className="w-2 h-2"></div>
+              ) : user ? (
                  <>
                    <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.8)] animate-pulse"></div>
                    <span className="text-[10px] md:text-sm font-medium tracking-tight text-white uppercase">Bridge Established {(profile?.username) && `@${profile.username}`}</span>
@@ -98,6 +114,8 @@ export default function Layout({ children, customBg }: { children: React.ReactNo
         </div>
       </footer>
       )}
+
+      {/* Powered by Saqib Footer - removed as it's now in the top bar */}
     </div>
   );
 }

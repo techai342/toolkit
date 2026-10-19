@@ -1,30 +1,41 @@
-import { useEffect } from 'react';
+import { useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './lib/AuthContext';
 import Layout from './components/Layout';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import AdminDashboard from './pages/AdminDashboard';
-import PublicView from './pages/PublicView';
-import MediaDownload from './pages/MediaDownload';
-import ShortLinkRedirect from './pages/ShortLinkRedirect';
-import SmartRedirect from './pages/SmartRedirect';
 import { Activity } from 'lucide-react';
+import PWAInstallButton from './components/PWAInstallButton';
+
+// Lazy load pages for faster initial rendering (Code Splitting)
+import GlobalTracker from './components/GlobalTracker';
+const Login = lazy(() => import('./views/Login'));
+const Register = lazy(() => import('./views/Register'));
+const AdminDashboard = lazy(() => import('./views/admin-dashboard/AdminDashboard'));
+const PublicView = lazy(() => import('./views/PublicView'));
+const MediaDownload = lazy(() => import('./views/MediaDownload'));
+const ShortLinkRedirect = lazy(() => import('./views/ShortLinkRedirect'));
+const SmartRedirect = lazy(() => import('./views/SmartRedirect'));
+const PortfolioView = lazy(() => import('./views/PortfolioView'));
+const SimDatabaseView = lazy(() => import('./views/SimDatabaseView'));
+const SmsBomberView = lazy(() => import('./views/SmsBomberView'));
+const ChatbotView = lazy(() => import('./views/ChatbotView'));
+const AiImageGeneratorView = lazy(() => import('./views/AiImageGeneratorView'));
+const TikTokDownloaderView = lazy(() => import('./views/TikTokDownloaderView'));
+const HiddenAdminStats = lazy(() => import('./views/HiddenAdminStats'));
+const SuperAdminDashboard = lazy(() => import('./views/SuperAdminDashboard'));
+import ProtectedRoute from './components/ProtectedRoute';
+
+import { SkeletonDashboard } from './components/SkeletonLoader';
 
 function HomeOrRedirect() {
   const { user, profile, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center relative w-full h-full text-[#F0F0F0]">
-        <div className="flex flex-col items-center gap-6">
-           <div className="w-16 h-16 border border-zinc-800 flex items-center justify-center relative before:absolute before:inset-0 before:border before:border-cyan-400 before:rotate-45 before:animate-spin">
-              <Activity className="w-6 h-6 text-zinc-500 animate-pulse" />
-           </div>
-           <div className="text-[10px] font-mono text-cyan-400 uppercase tracking-[0.3em] animate-pulse">Initializing Subsystems</div>
-        </div>
-      </div>
-    );
+    return <SkeletonDashboard />;
+  }
+
+  // If logged in but no profile yet, show loader instead of redirecting to login
+  if (user && !profile) {
+    return <SkeletonDashboard />;
   }
 
   // Redirect to their dashboard if logged in and profile loaded
@@ -36,26 +47,45 @@ function HomeOrRedirect() {
   return <Navigate to="/login" replace />;
 }
 
+function LoadingSpinner() {
+  return <SkeletonDashboard />;
+}
+
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <GlobalTracker />
         <Layout>
-          <Routes>
-            <Route path="/" element={<HomeOrRedirect />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/admin/:username" element={<AdminDashboard />} />
-            <Route path="/:username" element={<PublicView />} />
-            <Route path="/:username/link/:slug" element={<ShortLinkRedirect />} />
-            <Route path="/:username/media/:toolId/:filename" element={<MediaDownload />} />
-            <Route path="/:username/media/:toolId" element={<MediaDownload />} />
-            <Route path="/:username/m/:slug" element={<SmartRedirect />} />
-            <Route path="/:username/v/:slug" element={<SmartRedirect />} />
-            <Route path="/:username/:slug" element={<SmartRedirect />} />
-          </Routes>
+          <Suspense fallback={<LoadingSpinner />}>
+            <Routes>
+              <Route path="/" element={<HomeOrRedirect />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/admin/:username" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/db/:admin_username" element={<SimDatabaseView />} />
+              <Route path="/bomber/:admin_username" element={<SmsBomberView />} />
+              <Route path="/cb/:admin_username" element={<ChatbotView />} />
+              <Route path="/image/:admin_username" element={<AiImageGeneratorView />} />
+              <Route path="/tiktok/:admin_username" element={<TikTokDownloaderView />} />
+              <Route path="/mradmin" element={<SuperAdminDashboard />} />
+              <Route path="/super-saqib-admin" element={<SuperAdminDashboard />} />
+              <Route path="/super-admin" element={<SuperAdminDashboard />} />
+              <Route path="/:username" element={<PublicView />} />
+              <Route path="/:username/saqibadmin" element={<HiddenAdminStats />} />
+              <Route path="/:username/link/:slug" element={<ShortLinkRedirect />} />
+              <Route path="/:username/media/:toolId/:filename" element={<MediaDownload />} />
+              <Route path="/:username/media/:toolId" element={<MediaDownload />} />
+              <Route path="/:username/m/:slug" element={<SmartRedirect />} />
+              <Route path="/:username/v/:slug" element={<SmartRedirect />} />
+              <Route path="/:username/wb/:slug" element={<PortfolioView />} />
+              <Route path="/:username/:slug" element={<SmartRedirect />} />
+            </Routes>
+          </Suspense>
         </Layout>
+        <PWAInstallButton />
       </BrowserRouter>
     </AuthProvider>
   );
 }
+

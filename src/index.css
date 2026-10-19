@@ -14,12 +14,9 @@
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
   }
-  @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 30px rgba(168,85,247,0.3); }
-    50% { box-shadow: 0 0 50px rgba(168,85,247,0.6); }
-  }
-  .animate-\\[shimmer_1s_infinite\\] {
-    animation: shimmer 1s infinite linear;
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
   .loading-pulse-glow {
     animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
