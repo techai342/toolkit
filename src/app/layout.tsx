@@ -16,8 +16,10 @@ const baseUrl = getBaseUrl();
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  maximumScale: 5,
   viewportFit: 'cover',
   themeColor: '#030014',
+  interactiveWidget: 'resizes-visual',
 };
 
 export const metadata: Metadata = {

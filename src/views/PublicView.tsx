@@ -540,7 +540,9 @@ export default function PublicView() {
           backgroundImage: pageProfile.bg_image_url ? `url(${pageProfile.bg_image_url})` : (pageProfile.bg_gradient || 'none'),
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          backgroundAttachment: 'fixed',
+          backgroundAttachment: 'scroll',
+          transform: 'translateZ(0)',
+          willChange: 'transform',
           zIndex: 0
         }}
       >
@@ -1169,7 +1171,7 @@ export default function PublicView() {
             href={waUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#25D366] text-black shadow-[0_0_30px_rgba(37,211,102,0.5)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all group border-2 border-white/30"
+            className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#25D366] text-black shadow-[0_0_30px_rgba(37,211,102,0.5)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all group border-2 border-white/30 transform-gpu will-change-transform"
             title={`Chat with ${pageProfile.username} on WhatsApp`}
           >
             <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-[#0A0F1E] animate-ping"></span>

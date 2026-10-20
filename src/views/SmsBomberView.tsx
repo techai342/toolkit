@@ -195,7 +195,7 @@ export default function SmsBomberView() {
 
   return (
     <div 
-      className="min-h-screen bg-[#020001] text-zinc-100 font-sans p-4 md:p-8 selection:bg-red-500 selection:text-white bg-cover bg-center bg-no-repeat bg-fixed"
+      className="min-h-screen bg-[#020001] text-zinc-100 font-sans p-4 md:p-8 selection:bg-red-500 selection:text-white bg-cover bg-center bg-no-repeat bg-scroll"
       style={bomberConfig.bg_image_url ? { backgroundImage: `url(${bomberConfig.bg_image_url})` } : {}}
     >
       {bomberConfig.bg_image_url && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-0"></div>}

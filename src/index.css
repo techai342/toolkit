@@ -9,6 +9,95 @@
   --font-outfit: "Outfit", sans-serif;
 }
 
+/* ==========================================================================
+   ⚡ ULTRA-SMOOTH MOBILE ACCELERATION (60-120 FPS FLUID ENGINE)
+   ========================================================================== */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 🚀 0ms Mobile Tap Delay */
+button,
+a,
+input,
+select,
+textarea,
+[role="button"],
+label {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 🏎️ Hardware Momentum Scrolling */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 📱 Native Active Tap Feedback */
+button:active,
+a:active,
+[role="button"]:active {
+  transform: scale(0.985);
+  transition: transform 0.08s cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* 💎 Fixed & Sticky UI Hardware Compositing */
+.fixed,
+.sticky {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* 🚫 Clean Hide Scrollbar Utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* 📱 Responsive Mobile GPU Fill-Rate & Framerate Protector (<= 768px) */
+@media (max-width: 768px) {
+  [class*="backdrop-blur-3xl"],
+  [class*="backdrop-blur-2xl"],
+  [class*="backdrop-blur-[40px]"],
+  [class*="backdrop-blur-[30px]"] {
+    -webkit-backdrop-filter: blur(12px) !important;
+    backdrop-filter: blur(12px) !important;
+  }
+
+  [class*="blur-[100px]"],
+  [class*="blur-[120px]"] {
+    filter: blur(35px) !important;
+    -webkit-filter: blur(35px) !important;
+  }
+
+  [class*="shadow-[0_20px_"],
+  [class*="shadow-[0_25px_"],
+  [class*="shadow-[0_30px_"],
+  [class*="shadow-[0_40px_"],
+  [class*="shadow-[0_50px_"] {
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.45) !important;
+  }
+}
+
 @layer utilities {
   @keyframes shimmer {
     0% { transform: translateX(-100%); }

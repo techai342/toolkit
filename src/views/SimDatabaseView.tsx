@@ -242,7 +242,7 @@ export default function SimDatabaseView() {
              backgroundImage: `url(${dbConfig.bg_image_url})`,
              backgroundSize: 'cover',
              backgroundPosition: 'center',
-             backgroundAttachment: 'fixed'
+             backgroundAttachment: 'scroll'
            }}
          />
       )}

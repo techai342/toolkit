@@ -6233,7 +6233,7 @@ export default function AdminDashboard() {
         )}
       </div>
 
-      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md z-[100] flex items-center justify-center p-2 bg-[#0F0A1F]/80 backdrop-blur-3xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md z-[100] flex items-center justify-center p-2 bg-[#0F0A1F]/80 backdrop-blur-3xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] transform-gpu will-change-transform">
         <div className="w-full flex items-center justify-around px-2">
           <button
             onClick={() => setActiveMainTab("tools")}

@@ -134,7 +134,7 @@ export default function ChatbotView() {
 
   return (
     <div 
-      className="min-h-screen w-full bg-[#0a0a0f] text-white font-['Rajdhani'] flex items-center justify-center relative overflow-hidden bg-cover bg-center bg-no-repeat bg-fixed"
+      className="min-h-screen w-full bg-[#0a0a0f] text-white font-['Rajdhani'] flex items-center justify-center relative overflow-hidden bg-cover bg-center bg-no-repeat bg-scroll"
       style={botConfig.bg_image_url ? { backgroundImage: `url(${botConfig.bg_image_url})` } : {}}
     >
       <style>{`
