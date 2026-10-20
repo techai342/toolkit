@@ -59,24 +59,23 @@ BEGIN
     -- 3. Delete all registered accounts from Supabase Auth (allows fresh signups)
     DELETE FROM auth.users;
 
-    -- 4. Ensure Super Admin (/mradmin) Credentials are Active & Safe
+    -- 4. Ensure Super Admin table & columns exist safely
     CREATE TABLE IF NOT EXISTS public.super_admin_auth (
         id integer PRIMARY KEY DEFAULT 1,
         username text NOT NULL DEFAULT 'saqib',
-        password text NOT NULL DEFAULT 'saqibadmin',
-        password_hash text,
-        salt text,
-        iterations integer DEFAULT 100000,
-        last_password_change timestamp with time zone DEFAULT timezone('utc'::text, now()),
-        updated_at timestamp with time zone DEFAULT timezone('utc'::text, now())
+        password text NOT NULL DEFAULT 'saqibadmin'
     );
 
-    -- Ensure Super Admin row 1 exists
+    ALTER TABLE public.super_admin_auth ADD COLUMN IF NOT EXISTS password_hash text;
+    ALTER TABLE public.super_admin_auth ADD COLUMN IF NOT EXISTS salt text;
+    ALTER TABLE public.super_admin_auth ADD COLUMN IF NOT EXISTS iterations integer DEFAULT 100000;
+    ALTER TABLE public.super_admin_auth ADD COLUMN IF NOT EXISTS last_password_change timestamp with time zone DEFAULT timezone('utc'::text, now());
+    ALTER TABLE public.super_admin_auth ADD COLUMN IF NOT EXISTS updated_at timestamp with time zone DEFAULT timezone('utc'::text, now());
+
+    -- Ensure Super Admin row 1 exists without failing
     INSERT INTO public.super_admin_auth (id, username, password)
     VALUES (1, 'saqib', 'saqibadmin')
-    ON CONFLICT (id) DO UPDATE SET 
-        username = EXCLUDED.username,
-        updated_at = timezone('utc'::text, now());
+    ON CONFLICT (id) DO NOTHING;
 
 END $$;
 
