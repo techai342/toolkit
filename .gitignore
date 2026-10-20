@@ -1,12 +1,57 @@
+# Dependencies
 node_modules/
-build/
-dist/
-coverage/
+.pnpm-store/
+
+# Production & Build outputs
 .next/
 out/
-.DS_Store
-*.log
+build/
+dist/
+.vercel/
+
+# Environment variables & secrets (keep .env.example tracked)
+.env
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 .env*
 !.env.example
+
+# Debug & Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# TypeScript build cache
 *.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Testing & Coverage
+coverage/
+
+# System files & OS metadata
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary & Agent files
 .system_generated/
+.gemini/
