@@ -83,6 +83,7 @@ import {
 } from "./utils";
 import { Profile, Tool, ShortLink, Portfolio, SimDatabase, SmsBomber, Chatbot, AiImageGenerator, TikTokDownloader } from "./types";
 import { CustomToolsTab } from "./components/tabs/CustomToolsTab";
+import { ApplicationOwnerTab } from "./components/tabs/ApplicationOwnerTab";
 import { SkeletonDashboard } from "../../components/SkeletonLoader";
 import { ToolkitSetupWizard } from "./components/ToolkitSetupWizard";
 
@@ -526,7 +527,7 @@ export default function AdminDashboard() {
   }, [user?.id]);
 
   const [activeMainTab, setActiveMainTab] = useState<
-    "tools" | "shortlinks" | "portfolios" | "uploads" | "custom_tools" | "analytics"
+    "tools" | "shortlinks" | "portfolios" | "uploads" | "custom_tools" | "analytics" | "owner"
   >("tools");
 
   // Cropper State
@@ -2641,7 +2642,8 @@ export default function AdminDashboard() {
               { id: "portfolios", icon: ImageIcon, label: "Portfolio" },
               { id: "shortlinks", icon: LinkIcon, label: "Short" },
               { id: "custom_tools", icon: FileCode, label: "Builder" },
-              { id: "analytics", icon: BarChart3, label: "Stats" }
+              { id: "analytics", icon: BarChart3, label: "Stats" },
+              { id: "owner", icon: Sparkles, label: "Owner" }
             ].map(tab => (
               <button
                 key={tab.id}
@@ -2700,6 +2702,13 @@ export default function AdminDashboard() {
             >
               <BarChart3 className="w-4 h-4" />
               Analytics
+            </button>
+            <button
+              onClick={() => setActiveMainTab("owner")}
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeMainTab === "owner" ? "bg-gradient-to-r from-purple-600 via-fuchsia-600 to-indigo-600 text-white shadow-[0_0_20px_rgba(217,70,239,0.5)] border border-fuchsia-400/30" : "text-zinc-400 hover:text-white hover:bg-white/5"}`}
+            >
+              <Sparkles className="w-4 h-4 text-fuchsia-400" />
+              Application Owner
             </button>
           </div>
 
@@ -3715,6 +3724,10 @@ export default function AdminDashboard() {
                 </div>
               </div>
             </div>
+          )}
+
+          {activeMainTab === "owner" && (
+            <ApplicationOwnerTab />
           )}
         </div>
 
