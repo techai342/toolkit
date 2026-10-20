@@ -3,12 +3,17 @@ import { useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Sparkles, Download, Loader2, AlertCircle, Eye, User, Rocket } from 'lucide-react';
 import { AiImageGenerator } from './admin-dashboard/types';
+import { Lock } from 'lucide-react';
+import { ToolLockModal, ToolLockBanner, useToolLock } from '../components/ToolLockGate';
 
 export default function AiImageGeneratorView() {
   const { admin_username } = useParams();
   const [config, setConfig] = useState<AiImageGenerator | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const { isLocked, relock } = useToolLock();
+  const [lockModalOpen, setLockModalOpen] = useState(false);
 
   const [prompt, setPrompt] = useState('luxury sports car on a rainy street');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -47,6 +52,10 @@ export default function AiImageGeneratorView() {
   }, [admin_username]);
 
   const generateImage = async () => {
+    if (isLocked) {
+      setLockModalOpen(true);
+      return;
+    }
     if (!prompt.trim() || isGenerating) return;
 
     setIsGenerating(true);
@@ -135,6 +144,12 @@ export default function AiImageGeneratorView() {
 
       {/* Main Container */}
       <div className="relative z-10 w-full max-w-2xl">
+        <ToolLockBanner 
+          toolName="AI Image Generator" 
+          isLocked={isLocked} 
+          onUnlockClick={() => setLockModalOpen(true)} 
+          onRelockClick={relock} 
+        />
         <div className="bg-white/[0.08] backdrop-blur-[30px] border border-white/15 rounded-[32px] p-6 md:p-10 shadow-[0_25px_60px_rgba(0,0,0,0.4)] text-center overflow-hidden">
           
           {/* Logo / Header */}
@@ -164,11 +179,12 @@ export default function AiImageGeneratorView() {
               />
               <button 
                 onClick={generateImage}
-                disabled={isGenerating || !prompt.trim()}
+                disabled={isGenerating || (!prompt.trim() && !isLocked)}
                 className="bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-indigo-500/30 transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50"
+                style={{ background: isLocked ? '#f59e0b' : undefined, color: isLocked ? '#000' : '#fff' }}
               >
-                {isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Rocket className="w-5 h-5" />}
-                {isGenerating ? 'GEN...' : 'GO'}
+                {isLocked ? <Lock className="w-5 h-5 text-black" /> : (isGenerating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Rocket className="w-5 h-5" />)}
+                {isLocked ? 'LOCKED' : (isGenerating ? 'GEN...' : 'GO')}
               </button>
             </div>
 
@@ -243,6 +259,11 @@ export default function AiImageGeneratorView() {
           </p>
         </div>
       </div>
+      <ToolLockModal
+        isOpen={lockModalOpen}
+        onClose={() => setLockModalOpen(false)}
+        toolName="AI Image Generator"
+      />
     </div>
   );
 }

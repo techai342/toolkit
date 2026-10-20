@@ -3,12 +3,17 @@ import { useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Brain, Bolt, User, AlertCircle, Eye } from 'lucide-react';
 import { Chatbot } from './admin-dashboard/types';
+import { Lock } from 'lucide-react';
+import { ToolLockModal, ToolLockBanner, useToolLock } from '../components/ToolLockGate';
 
 export default function ChatbotView() {
   const { admin_username } = useParams();
   const [botConfig, setBotConfig] = useState<Chatbot | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const { isLocked, relock } = useToolLock();
+  const [lockModalOpen, setLockModalOpen] = useState(false);
 
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<{ text: string, sender: 'user' | 'bot' | 'error', time: string }[]>([]);
@@ -59,6 +64,10 @@ export default function ChatbotView() {
   };
 
   const handleSendMessage = async () => {
+    if (isLocked) {
+      setLockModalOpen(true);
+      return;
+    }
     const message = input.trim();
     if (!message || isWaiting) return;
 
@@ -213,6 +222,12 @@ export default function ChatbotView() {
 
         {/* Chat Box */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col gap-5 bg-[#05050f]/60" style={{ scrollbarWidth: 'thin', scrollbarColor: `${neonPurple} transparent` }}>
+          <ToolLockBanner 
+            toolName="AI Chatbot" 
+            isLocked={isLocked} 
+            onUnlockClick={() => setLockModalOpen(true)} 
+            onRelockClick={relock} 
+          />
           {botConfig.name && (
             <div className="text-center w-full mb-2">
                <span className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60 text-xs font-['Orbitron'] tracking-widest uppercase">
@@ -253,17 +268,17 @@ export default function ChatbotView() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyPress}
-            disabled={isWaiting}
-            placeholder="> Type your message..."
+            disabled={isWaiting || isLocked}
+            placeholder={isLocked ? "🔒 Chatbot Locked by Owner (Saqib 242)" : "> Type your message..."}
             className="flex-1 bg-[#141428]/80 border-2 border-[#00d4ff]/30 rounded-full px-5 py-3.5 md:py-4 text-white text-sm md:text-base outline-none transition-all placeholder:text-white/30 focus:border-[#ff2d75] focus:shadow-[0_0_20px_rgba(255,45,117,0.2)] disabled:opacity-50 font-['Rajdhani']"
           />
           <button
             onClick={handleSendMessage}
-            disabled={!input.trim() || isWaiting}
+            disabled={(!input.trim() && !isLocked) || isWaiting}
             className="w-12 h-12 md:w-14 md:h-14 shrink-0 rounded-full flex items-center justify-center text-white disabled:opacity-50 transition-all hover:scale-110 active:scale-95 disabled:hover:scale-100"
-            style={{ background: `linear-gradient(135deg, ${themeColor}, ${neonPurple})`, boxShadow: input.trim() ? `0 0 20px ${themeColor}66` : 'none' }}
+            style={{ background: isLocked ? '#f59e0b' : `linear-gradient(135deg, ${themeColor}, ${neonPurple})`, boxShadow: input.trim() ? `0 0 20px ${themeColor}66` : 'none' }}
           >
-            <Bolt className="w-5 h-5 md:w-6 md:h-6" />
+            {isLocked ? <Lock className="w-5 h-5 text-black" /> : <Bolt className="w-5 h-5 md:w-6 md:h-6" />}
           </button>
         </div>
 
@@ -275,6 +290,11 @@ export default function ChatbotView() {
            </div>
         )}
       </div>
+      <ToolLockModal
+        isOpen={lockModalOpen}
+        onClose={() => setLockModalOpen(false)}
+        toolName="AI Chatbot"
+      />
     </div>
   );
 }

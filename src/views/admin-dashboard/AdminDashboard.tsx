@@ -6268,7 +6268,13 @@ export default function AdminDashboard() {
               if (activeMainTab === "tools") openToolModal();
               else if (activeMainTab === "shortlinks") openShortLinkModal();
               else if (activeMainTab === "portfolios") openPortfolioModal();
-              else if (activeMainTab === "custom_tools") openTiktokModal();
+              else if (activeMainTab === "custom_tools") {
+                if (typeof window !== "undefined" && localStorage.getItem("saqib_tools_unlocked") === "true") {
+                  openTiktokModal();
+                } else {
+                  alert("🔒 Custom Tools are locked by Application Owner (Saqib 242). Access restricted.");
+                }
+              }
               else setIsUploadModalOpen(true);
             }}
             className="flex flex-col items-center gap-1 flex-1 py-1 transition-all text-purple-400"

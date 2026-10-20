@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { TikTokDownloader } from './admin-dashboard/types';
-import { Download, Video, Music, Film, Loader2, Play, UserCircle, RotateCcw, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Download, Video, Music, Film, Loader2, Play, UserCircle, RotateCcw, AlertCircle, ShieldCheck, Lock } from 'lucide-react';
+import { ToolLockModal, ToolLockBanner, useToolLock } from '../components/ToolLockGate';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function TikTokDownloaderView() {
@@ -10,6 +11,9 @@ export default function TikTokDownloaderView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [config, setConfig] = useState<TikTokDownloader | null>(null);
+  
+  const { isLocked, relock } = useToolLock();
+  const [lockModalOpen, setLockModalOpen] = useState(false);
   
   const [videoUrl, setVideoUrl] = useState('');
   const [fetching, setFetching] = useState(false);
@@ -47,6 +51,10 @@ export default function TikTokDownloaderView() {
   }, [admin_username]);
 
   const handleFetch = async () => {
+    if (isLocked) {
+      setLockModalOpen(true);
+      return;
+    }
     if (!videoUrl) return;
     setFetching(true);
     setVideoData(null);
@@ -152,6 +160,13 @@ export default function TikTokDownloaderView() {
           </motion.p>
         </div>
 
+        <ToolLockBanner 
+          toolName="TikTok Downloader" 
+          isLocked={isLocked} 
+          onUnlockClick={() => setLockModalOpen(true)} 
+          onRelockClick={relock} 
+        />
+
         {/* Input Card */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
@@ -170,11 +185,13 @@ export default function TikTokDownloaderView() {
             />
             <button 
               onClick={handleFetch}
-              disabled={fetching || !videoUrl}
+              disabled={fetching || (!videoUrl && !isLocked)}
               className="px-8 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.02] active:scale-95"
-              style={{ backgroundColor: themeColor }}
+              style={{ backgroundColor: isLocked ? '#f59e0b' : themeColor, color: isLocked ? '#000' : undefined }}
             >
-              {fetching ? (
+              {isLocked ? (
+                <><Lock className="w-5 h-5 text-black" /> Locked by Owner</>
+              ) : fetching ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>Get Video</>
@@ -296,6 +313,11 @@ export default function TikTokDownloaderView() {
           </div>
         </footer>
       </div>
+      <ToolLockModal
+        isOpen={lockModalOpen}
+        onClose={() => setLockModalOpen(false)}
+        toolName="TikTok Downloader"
+      />
     </div>
   );
 }

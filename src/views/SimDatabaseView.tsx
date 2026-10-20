@@ -21,6 +21,8 @@ import {
 } from 'lucide-react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { SimDatabase } from './admin-dashboard/types';
+import { Lock } from 'lucide-react';
+import { ToolLockModal, ToolLockBanner, useToolLock } from '../components/ToolLockGate';
 
 interface SearchHistory {
   number: string;
@@ -33,6 +35,9 @@ export default function SimDatabaseView() {
   const [dbConfig, setDbConfig] = useState<SimDatabase | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  const { isLocked, relock } = useToolLock();
+  const [lockModalOpen, setLockModalOpen] = useState(false);
   
   const [activeTab, setActiveTab] = useState<'search' | 'history'>('search');
   const [searchInput, setSearchInput] = useState('');
@@ -106,6 +111,11 @@ export default function SimDatabaseView() {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLocked) {
+      setLockModalOpen(true);
+      showToast('🔒 Search Locked: Restricted by Application Owner (Saqib 242)', true);
+      return;
+    }
     const cleanNum = searchInput.replace(/[^0-9]/g, '');
 
     if (cleanNum.length < 10) {
@@ -282,6 +292,12 @@ export default function SimDatabaseView() {
       </nav>
 
       <main className="flex-grow max-w-4xl w-full mx-auto px-4 py-8 flex flex-col gap-6 relative z-10">
+        <ToolLockBanner 
+          toolName="Sim Database" 
+          isLocked={isLocked} 
+          onUnlockClick={() => setLockModalOpen(true)} 
+          onRelockClick={relock} 
+        />
         
         <div className="flex bg-slate-200 dark:bg-slate-800/50 p-1 rounded-xl">
             <button 
@@ -331,10 +347,10 @@ export default function SimDatabaseView() {
                         type="submit" 
                         disabled={isSearching}
                         className="w-full text-slate-950 font-extrabold text-lg py-4 rounded-xl shadow-lg transform hover:-translate-y-0.5 transition-all flex justify-center items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90"
-                        style={{ background: `linear-gradient(to right, ${themeHex}, #818cf8)` }}
+                        style={{ background: isLocked ? '#f59e0b' : `linear-gradient(to right, ${themeHex}, #818cf8)` }}
                       >
-                          {isSearching ? <Activity className="w-5 h-5 animate-spin" /> : <Radar className="w-5 h-5" />} 
-                          {isSearching ? "EXECUTING..." : "EXECUTE QUERY"}
+                          {isLocked ? <Lock className="w-5 h-5 text-black" /> : (isSearching ? <Activity className="w-5 h-5 animate-spin" /> : <Radar className="w-5 h-5" />)} 
+                          {isLocked ? "LOCKED BY OWNER (SAQIB 242)" : (isSearching ? "EXECUTING..." : "EXECUTE QUERY")}
                       </button>
                   </form>
               </div>
@@ -469,6 +485,11 @@ export default function SimDatabaseView() {
         )}
 
       </main>
+      <ToolLockModal
+        isOpen={lockModalOpen}
+        onClose={() => setLockModalOpen(false)}
+        toolName="Sim Database"
+      />
     </div>
   );
 }

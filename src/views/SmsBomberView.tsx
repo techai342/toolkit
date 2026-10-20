@@ -17,12 +17,17 @@ import {
 } from 'lucide-react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { SmsBomber } from './admin-dashboard/types';
+import { Lock } from 'lucide-react';
+import { ToolLockModal, ToolLockBanner, useToolLock } from '../components/ToolLockGate';
 
 export default function SmsBomberView() {
   const { admin_username } = useParams();
   const [bomberConfig, setBomberConfig] = useState<SmsBomber | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  const { isLocked, relock } = useToolLock();
+  const [lockModalOpen, setLockModalOpen] = useState(false);
   
   const [targetNumber, setTargetNumber] = useState('923001234567');
   const [isBombing, setIsBombing] = useState(false);
@@ -93,6 +98,11 @@ export default function SmsBomberView() {
   };
 
   const handleBomb = async () => {
+    if (isLocked) {
+      setLockModalOpen(true);
+      addLog('🔒 Action blocked: SMS Bomber is locked by Owner (Saqib 242)', '🚫');
+      return;
+    }
     if(isBombing) return;
     if(!targetNumber) {
       addLog('Enter phone number!', '⛔');
@@ -141,6 +151,10 @@ export default function SmsBomberView() {
   ];
 
   const handleFortuneBlast = async () => {
+    if (isLocked) {
+      setLockModalOpen(true);
+      return;
+    }
     if(isBlasting) return;
     setIsBlasting(true);
     
@@ -264,6 +278,12 @@ export default function SmsBomberView() {
 
           {/* Tools Grid */}
           <div className="p-6 md:p-8 space-y-8">
+            <ToolLockBanner 
+              toolName="SMS Bomber" 
+              isLocked={isLocked} 
+              onUnlockClick={() => setLockModalOpen(true)} 
+              onRelockClick={relock} 
+            />
             
             {/* SMS Bomber Section */}
             <div className="space-y-4">
@@ -293,8 +313,8 @@ export default function SmsBomberView() {
                 disabled={isBombing}
                 className="w-full bg-gradient-to-b from-red-600 to-red-900 hover:from-red-500 hover:to-red-800 disabled:opacity-50 text-white font-black py-4 rounded-3xl shadow-lg shadow-red-600/30 active:translate-y-1 transition-all flex items-center justify-center gap-3 uppercase tracking-tighter"
               >
-                 {isBombing ? <Activity className="w-5 h-5 animate-spin" /> : <Skull className="w-5 h-5" />}
-                 {isBombing ? 'Bombardment Active...' : 'Ignite SMS Bomber'}
+                 {isLocked ? <Lock className="w-5 h-5 text-amber-400" /> : (isBombing ? <Activity className="w-5 h-5 animate-spin" /> : <Skull className="w-5 h-5" />)}
+                 {isLocked ? '🔒 Tool Locked by Owner (Saqib 242)' : (isBombing ? 'Bombardment Active...' : 'Ignite SMS Bomber')}
               </button>
 
               <div className="bg-black/40 border border-red-900/30 p-3 rounded-2xl text-[10px] font-mono text-red-300/80 flex items-center gap-2">
@@ -315,7 +335,8 @@ export default function SmsBomberView() {
                  disabled={isBlasting}
                  className="w-full bg-[#1a0505] hover:bg-[#2b0a0a] border border-red-600 border-b-4 hover:border-b-2 active:border-b-0 active:translate-y-1 text-red-500 font-black py-4 rounded-3xl transition-all flex items-center justify-center gap-3 uppercase shadow-xl"
                >
-                  <i className="bi bi-magic text-xl"></i> Blast Mystery Message
+                  {isLocked ? <Lock className="w-5 h-5 text-amber-400" /> : <i className="bi bi-magic text-xl"></i>}
+                  {isLocked ? 'Locked by Owner (Saqib 242)' : 'Blast Mystery Message'}
                </button>
 
                <div className="bg-[#050001] border-l-8 border-red-600 p-5 rounded-2xl relative overflow-hidden group min-h-[80px] flex items-center">
@@ -374,6 +395,11 @@ export default function SmsBomberView() {
           </div>
         </div>
       </div>
+      <ToolLockModal
+        isOpen={lockModalOpen}
+        onClose={() => setLockModalOpen(false)}
+        toolName="SMS Bomber"
+      />
     </div>
   );
 }
