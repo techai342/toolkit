@@ -749,13 +749,13 @@ export default function PublicView() {
           </GlowWrapper>
 
           {/* Categories Filter & Layout Switcher */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-2">
-              <div className="flex flex-wrap gap-2.5 justify-center sm:justify-start w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mt-2">
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth w-full sm:w-auto pb-1">
                  {displayCategories.map(cat => (
                      <button 
                          key={cat}
                          onClick={() => setSelectedCategory(cat)}
-                         className={`px-5 py-2 rounded-xl border text-xs font-bold transition-all backdrop-blur-md ${
+                         className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all backdrop-blur-md shrink-0 active:scale-95 ${
                              selectedCategory === cat 
                              ? 'bg-purple-600 border-purple-400 text-white shadow-[0_0_15px_rgba(168,85,247,0.5)] scale-[1.02]'
                              : 'bg-white/[0.04] border-white/10 text-zinc-300 hover:border-white/30 hover:bg-white/[0.08]'

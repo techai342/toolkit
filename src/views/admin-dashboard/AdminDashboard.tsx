@@ -2541,59 +2541,66 @@ export default function AdminDashboard() {
             )}
           </div>
           {isOwner && (
-            <div className="flex flex-wrap sm:flex-nowrap gap-2 md:gap-4 items-center w-full md:w-auto mt-4 md:mt-0 px-1">
-              <button
-                onClick={openSettings}
-                className="flex-1 sm:flex-none justify-center px-4 py-3 rounded-xl bg-gradient-to-r from-purple-600/30 via-pink-600/30 to-emerald-600/30 border border-purple-500/40 hover:border-purple-400 text-white backdrop-blur-md transition-all shadow-[0_0_20px_rgba(168,85,247,0.25)] flex items-center gap-2 group hover:scale-[1.02]"
-                title="Step-by-Step Toolkit Setup Wizard"
-              >
-                <Sparkles className="w-4 h-4 text-purple-400 group-hover:rotate-12 transition-transform" />
-                <span className="text-xs font-black uppercase tracking-widest bg-gradient-to-r from-white via-purple-200 to-emerald-200 bg-clip-text text-transparent">
-                  Setup Wizard
-                </span>
-              </button>
-
-              <button
-                onClick={() => {
-                  const win = window.open(`/${pageProfile.username}`, "_blank");
-                  if (win) win.focus();
-                }}
-                className="flex-1 sm:flex-none justify-center px-4 py-3 rounded-xl bg-emerald-600/20 border border-emerald-500/40 hover:bg-emerald-600/30 hover:border-emerald-500 text-emerald-400 backdrop-blur-md transition-all shadow-xl flex items-center gap-2"
-                title="Launch Public Page"
-              >
-                <Globe className="w-4 h-4 md:w-5 md:h-5 shrink-0" />
-                <span className="text-xs font-black uppercase tracking-widest">
-                  Launch
-                </span>
-              </button>
-              <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2 md:gap-3 w-full md:w-auto mt-4 md:mt-0 px-1">
+              {/* Primary Actions Row */}
+              <div className="flex items-center gap-2 w-full sm:w-auto">
                 <button
                   onClick={openSettings}
-                  className="p-3 shrink-0 rounded-xl bg-white/[0.05] border border-white/10 hover:border-purple-400 hover:text-purple-300 text-zinc-300 backdrop-blur-md transition-all shadow-sm"
-                  title="Settings"
+                  className="flex-1 sm:flex-none justify-center px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl bg-gradient-to-r from-purple-600/30 via-pink-600/30 to-emerald-600/30 border border-purple-500/40 hover:border-purple-400 text-white backdrop-blur-md transition-all shadow-[0_0_20px_rgba(168,85,247,0.25)] flex items-center gap-2 group hover:scale-[1.02] active:scale-95"
+                  title="Step-by-Step Toolkit Setup Wizard"
                 >
-                  <Settings className="w-5 h-5" />
+                  <Sparkles className="w-4 h-4 text-purple-400 group-hover:rotate-12 transition-transform" />
+                  <span className="text-xs font-black uppercase tracking-widest bg-gradient-to-r from-white via-purple-200 to-emerald-200 bg-clip-text text-transparent">
+                    Setup Wizard
+                  </span>
                 </button>
+
                 <button
-                  onClick={handleSignOut}
-                  className="p-3 shrink-0 rounded-xl bg-red-500/10 border border-red-500/20 hover:border-red-500 hover:text-red-400 text-red-300 backdrop-blur-md transition-all shadow-sm"
-                  title="Logout"
+                  onClick={() => {
+                    const win = window.open(`/${pageProfile.username}`, "_blank");
+                    if (win) win.focus();
+                  }}
+                  className="flex-1 sm:flex-none justify-center px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl bg-emerald-600/20 border border-emerald-500/40 hover:bg-emerald-600/30 hover:border-emerald-500 text-emerald-400 backdrop-blur-md transition-all shadow-xl flex items-center gap-2 active:scale-95"
+                  title="Launch Public Page"
                 >
-                  <LogOut className="w-5 h-5" />
+                  <Globe className="w-4 h-4 md:w-5 md:h-5 shrink-0" />
+                  <span className="text-xs font-black uppercase tracking-widest">
+                    Launch
+                  </span>
                 </button>
               </div>
-              <label className="cursor-pointer flex-1 sm:flex-none justify-center bg-white/[0.05] border border-white/10 hover:border-purple-400 text-[10px] md:text-sm font-medium px-4 md:px-5 py-3 rounded-xl text-zinc-400 hover:text-purple-300 transition-all flex items-center gap-2 backdrop-blur-md shadow-sm whitespace-nowrap uppercase tracking-widest font-black">
-                <UploadCloud className="w-3 h-3 md:w-4 md:h-4 shrink-0" />
-                <span>{uploading ? "..." : "Avatar"}</span>
-                <input
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleDpUpload}
-                  ref={dpInputRef}
-                  disabled={uploading}
-                />
-              </label>
+
+              {/* Utility Actions Row */}
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <label className="cursor-pointer flex-1 sm:flex-none justify-center bg-white/[0.05] border border-white/10 hover:border-purple-400 text-xs font-bold px-3 py-2.5 sm:px-4 sm:py-3 rounded-xl text-zinc-300 hover:text-purple-300 transition-all flex items-center gap-1.5 backdrop-blur-md shadow-sm whitespace-nowrap uppercase tracking-wider active:scale-95">
+                  <UploadCloud className="w-3.5 h-3.5 shrink-0" />
+                  <span>{uploading ? "..." : "Avatar"}</span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleDpUpload}
+                    ref={dpInputRef}
+                    disabled={uploading}
+                  />
+                </label>
+
+                <button
+                  onClick={openSettings}
+                  className="p-2.5 sm:p-3 shrink-0 rounded-xl bg-white/[0.05] border border-white/10 hover:border-purple-400 hover:text-purple-300 text-zinc-300 backdrop-blur-md transition-all shadow-sm active:scale-95"
+                  title="Settings"
+                >
+                  <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
+                </button>
+
+                <button
+                  onClick={handleSignOut}
+                  className="p-2.5 sm:p-3 shrink-0 rounded-xl bg-red-500/10 border border-red-500/20 hover:border-red-500 hover:text-red-400 text-red-300 backdrop-blur-md transition-all shadow-sm active:scale-95"
+                  title="Logout"
+                >
+                  <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
+                </button>
+              </div>
               <button
                 onClick={() => {
                   if (activeMainTab === "tools") openToolModal();
@@ -2635,7 +2642,7 @@ export default function AdminDashboard() {
         {/* Main Tools Container */}
         <div className="w-full max-w-5xl mx-auto flex flex-col gap-6 relative z-20 pt-4">
           {/* Main Tab Switcher */}
-          <div className="md:hidden flex items-center gap-2 p-2 bg-white/[0.03] backdrop-blur-3xl border border-white/10 rounded-2xl w-full mb-4 overflow-x-auto no-scrollbar scroll-smooth">
+          <div className="md:hidden flex items-center gap-2 p-1.5 bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl w-full mb-4 overflow-x-auto no-scrollbar scroll-smooth">
             {[
               { id: "tools", icon: Edit, label: "Tools" },
               { id: "uploads", icon: UploadCloud, label: "Media" },
@@ -2648,14 +2655,14 @@ export default function AdminDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveMainTab(tab.id as any)}
-                className={`shrink-0 flex flex-col items-center justify-center gap-1.5 min-w-[75px] h-[75px] rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all border ${
+                className={`shrink-0 flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border active:scale-95 ${
                   activeMainTab === tab.id 
-                  ? "bg-gradient-to-br from-purple-600 to-indigo-600 text-white border-transparent shadow-[0_10px_20px_rgba(139,92,246,0.3)]" 
-                  : "bg-white/5 text-zinc-500 border-white/5"
+                  ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white border-purple-400/50 shadow-[0_4px_15px_rgba(139,92,246,0.4)]" 
+                  : "bg-white/[0.04] text-zinc-400 border-white/5 hover:bg-white/[0.08]"
                 }`}
               >
-                <tab.icon className="w-5 h-5 mb-0.5" />
-                {tab.label}
+                <tab.icon className="w-3.5 h-3.5 shrink-0" />
+                <span>{tab.label}</span>
               </button>
             ))}
           </div>
@@ -2908,7 +2915,7 @@ export default function AdminDashboard() {
 
                         {/* Admin Actions Overlay */}
                         {isAuthorized && (
-                          <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0 z-20 duration-300">
+                          <div className="absolute top-2 right-2 md:top-3 md:right-3 flex flex-col gap-1.5 md:gap-2 opacity-95 md:opacity-0 md:group-hover:opacity-100 transition-all translate-x-0 md:translate-x-4 md:group-hover:translate-x-0 z-20 duration-300">
                             <button
                               onClick={(e) => {
                                 e.preventDefault();
@@ -3360,7 +3367,7 @@ export default function AdminDashboard() {
                           </button>
                           <button
                             onClick={(e) => deleteTool(media.id, e)}
-                            className="p-2.5 text-zinc-400 hover:text-red-400 bg-white/5 rounded-xl hover:bg-white/10 transition-all opacity-0 group-hover:opacity-100"
+                            className="p-2.5 text-zinc-400 hover:text-red-400 bg-white/5 rounded-xl hover:bg-white/10 transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -6233,36 +6240,32 @@ export default function AdminDashboard() {
         )}
       </div>
 
-      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md z-[100] flex items-center justify-center p-2 bg-[#0F0A1F]/80 backdrop-blur-3xl border border-white/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] transform-gpu will-change-transform">
-        <div className="w-full flex items-center justify-around px-2">
+      {/* 📱 Ultra-Sleek Mobile Bottom Floating Navigation Dock */}
+      <div className="md:hidden fixed bottom-5 left-1/2 -translate-x-1/2 w-[92%] max-w-sm z-[100] p-1.5 bg-[#0b0816]/90 backdrop-blur-2xl border border-white/15 rounded-[2rem] shadow-[0_15px_35px_rgba(0,0,0,0.7)] transform-gpu will-change-transform">
+        <div className="w-full flex items-center justify-between px-2">
+          {/* Tools */}
           <button
             onClick={() => setActiveMainTab("tools")}
-            className={`flex flex-col items-center gap-1 flex-1 py-1 transition-all ${activeMainTab === "tools" ? "text-purple-400" : "text-zinc-500 hover:text-zinc-400"}`}
+            className={`flex flex-col items-center gap-1 py-1 px-2 transition-all active:scale-90 ${activeMainTab === "tools" ? "text-purple-400 font-bold" : "text-zinc-500 hover:text-zinc-400"}`}
           >
-            <div
-              className={`p-2 rounded-xl transition-all ${activeMainTab === "tools" ? "bg-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.2)]" : ""}`}
-            >
+            <div className={`p-1.5 rounded-xl transition-all ${activeMainTab === "tools" ? "bg-purple-500/20 shadow-[0_0_12px_rgba(168,85,247,0.3)] ring-1 ring-purple-500/30" : ""}`}>
               <MessageSquare size={16} />
             </div>
-            <span className="text-[7px] font-bold uppercase tracking-widest">
-              Tools
-            </span>
+            <span className="text-[8px] font-black uppercase tracking-wider">Tools</span>
           </button>
 
+          {/* Folio */}
           <button
             onClick={() => setActiveMainTab("portfolios")}
-            className={`flex flex-col items-center gap-1 flex-1 py-1 transition-all ${activeMainTab === "portfolios" ? "text-emerald-400" : "text-zinc-500 hover:text-zinc-400"}`}
+            className={`flex flex-col items-center gap-1 py-1 px-2 transition-all active:scale-90 ${activeMainTab === "portfolios" ? "text-emerald-400 font-bold" : "text-zinc-500 hover:text-zinc-400"}`}
           >
-            <div
-              className={`p-2 rounded-xl transition-all ${activeMainTab === "portfolios" ? "bg-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.2)]" : ""}`}
-            >
+            <div className={`p-1.5 rounded-xl transition-all ${activeMainTab === "portfolios" ? "bg-emerald-500/20 shadow-[0_0_12px_rgba(16,185,129,0.3)] ring-1 ring-emerald-500/30" : ""}`}>
               <Palette size={16} />
             </div>
-            <span className="text-[7px] font-bold uppercase tracking-widest">
-              Folio
-            </span>
+            <span className="text-[8px] font-black uppercase tracking-wider">Folio</span>
           </button>
 
+          {/* Elevated Floating Center Add Button */}
           <button
             onClick={() => {
               if (activeMainTab === "tools") openToolModal();
@@ -6274,45 +6277,36 @@ export default function AdminDashboard() {
                 } else {
                   alert("🔒 Custom Tools are locked by Application Owner (Saqib 242). Access restricted.");
                 }
+              } else {
+                setIsUploadModalOpen(true);
               }
-              else setIsUploadModalOpen(true);
             }}
-            className="flex flex-col items-center gap-1 flex-1 py-1 transition-all text-purple-400"
+            className="w-11 h-11 -mt-5 rounded-full bg-gradient-to-tr from-purple-600 via-indigo-600 to-cyan-500 text-white flex items-center justify-center shadow-[0_8px_20px_rgba(168,85,247,0.55)] border-2 border-[#0b0816] active:scale-90 transition-all ring-2 ring-purple-500/25"
+            title="Create / Add Content"
           >
-            <div className="p-1.5 rounded-xl bg-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.2)] border border-purple-500/30">
-              <Plus size={16} />
-            </div>
-            <span className="text-[7px] font-bold uppercase tracking-widest">
-              Add
-            </span>
+            <Plus size={20} className="stroke-[2.5]" />
           </button>
 
+          {/* Links */}
           <button
             onClick={() => setActiveMainTab("shortlinks")}
-            className={`flex flex-col items-center gap-1 flex-1 py-1 transition-all ${activeMainTab === "shortlinks" ? "text-indigo-400" : "text-zinc-500 hover:text-zinc-400"}`}
+            className={`flex flex-col items-center gap-1 py-1 px-2 transition-all active:scale-90 ${activeMainTab === "shortlinks" ? "text-indigo-400 font-bold" : "text-zinc-500 hover:text-zinc-400"}`}
           >
-            <div
-              className={`p-2 rounded-xl transition-all ${activeMainTab === "shortlinks" ? "bg-indigo-500/20 shadow-[0_0_15px_rgba(79,70,229,0.2)]" : ""}`}
-            >
+            <div className={`p-1.5 rounded-xl transition-all ${activeMainTab === "shortlinks" ? "bg-indigo-500/20 shadow-[0_0_12px_rgba(79,70,229,0.3)] ring-1 ring-indigo-500/30" : ""}`}>
               <LinkIcon size={16} />
             </div>
-            <span className="text-[7px] font-bold uppercase tracking-widest">
-              Links
-            </span>
+            <span className="text-[8px] font-black uppercase tracking-wider">Links</span>
           </button>
 
+          {/* Custom Tools */}
           <button
             onClick={() => setActiveMainTab("custom_tools")}
-            className={`flex flex-col items-center gap-1 flex-1 py-1 transition-all ${activeMainTab === "custom_tools" ? "text-cyan-400" : "text-zinc-500 hover:text-zinc-400"}`}
+            className={`flex flex-col items-center gap-1 py-1 px-2 transition-all active:scale-90 ${activeMainTab === "custom_tools" ? "text-cyan-400 font-bold" : "text-zinc-500 hover:text-zinc-400"}`}
           >
-            <div
-              className={`p-2 rounded-xl transition-all ${activeMainTab === "custom_tools" ? "bg-cyan-500/20 shadow-[0_0_15px_rgba(6,182,212,0.2)]" : ""}`}
-            >
+            <div className={`p-1.5 rounded-xl transition-all ${activeMainTab === "custom_tools" ? "bg-cyan-500/20 shadow-[0_0_12px_rgba(6,182,212,0.3)] ring-1 ring-cyan-500/30" : ""}`}>
               <FileCode size={16} />
             </div>
-            <span className="text-[7px] font-bold uppercase tracking-widest">
-              Custom
-            </span>
+            <span className="text-[8px] font-black uppercase tracking-wider">Custom</span>
           </button>
         </div>
       </div>
