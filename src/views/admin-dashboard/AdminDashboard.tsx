@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { supabase } from "../../lib/supabase";
+import { supabase, fetchWithUltraCache } from "../../lib/supabase";
 import { useAuth } from "../../lib/AuthContext";
 import {
   Shield,
@@ -545,18 +545,16 @@ export default function AdminDashboard() {
       if (!pageProfile) {
         setLoading(true);
       }
+      const cleanUser = (username || "").trim().toLowerCase();
       try {
-        const { data: profileData, error: profileError } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("username", username)
-          .single();
+        const { data: profileData, error: profileError } = await fetchWithUltraCache<any>(
+          `admin_profile_${cleanUser}`,
+          () => supabase.from("profiles").select("*").ilike("username", cleanUser).maybeSingle(),
+          60000
+        );
 
         if (profileData && !profileError) {
           setPageProfile(profileData);
-          try {
-            localStorage.setItem(`cached_profile_${username}`, JSON.stringify(profileData));
-          } catch {}
           
           // Fetch primary view data first for instant interactive dashboard
           await Promise.all([
@@ -574,11 +572,13 @@ export default function AdminDashboard() {
             fetchImageGenerators(profileData.id),
             fetchTiktokDownloaders(profileData.id),
             fetchAnalytics(profileData.id)
-          ]).catch(console.error);
+          ]).catch(() => {});
           return;
         } else {
           setPageProfile(null);
-          console.error("Profile fetch error:", profileError);
+          if (profileError && profileError.code !== 'PGRST116') {
+            console.warn("Profile fetch notice:", profileError.message || profileError);
+          }
         }
       } catch (err) {
         console.error("Unexpected error in fetchPageData:", err);

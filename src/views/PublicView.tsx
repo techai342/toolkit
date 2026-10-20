@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { supabase, fetchWithUltraCache } from '../lib/supabase';
 import { Shield, User as UserIcon, Search, Megaphone, Lock, MessageSquare, ExternalLink, CheckCircle, X, Globe, Mail, Send, Share2, Eye, Users, UserPlus, UserCheck, Activity, FileArchive, Music2, Video, FileCode, FileText, Sparkles, LayoutGrid, List, ArrowRight, Phone, MessageCircle } from 'lucide-react';
 import { SiWhatsapp, SiTiktok } from 'react-icons/si';
 import { SocialButton, RenderSocialIcon, GlassSocialIcon } from '../components/SocialIcons';
@@ -209,17 +209,14 @@ export default function PublicView() {
         setLoading(true);
       }
       try {
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .ilike('username', cleanUsername)
-          .maybeSingle();
+        const { data: profileData, error: profileError } = await fetchWithUltraCache<any>(
+          `public_profile_${cleanUsername}`,
+          () => supabase.from('profiles').select('*').ilike('username', cleanUsername).maybeSingle(),
+          60000
+        );
           
         if (profileData && !profileError) {
            setPageProfile(profileData);
-           try {
-             localStorage.setItem(`cached_public_profile_${cleanUsername}`, JSON.stringify(profileData));
-           } catch {}
            
            // Fetch all social data in parallel for 10x faster performance
            await Promise.all([
@@ -227,8 +224,10 @@ export default function PublicView() {
              checkFollowStatus(profileData.id)
            ]);
 
-           // Fire tracking in background without delaying initial render
-           trackView(profileData.id).catch(() => {});
+           // Fire tracking asynchronously in background without delaying initial render
+           setTimeout(() => {
+             trackView(profileData.id).catch(() => {});
+           }, 500);
            
            // Setup popup timing
            if (profileData.popup_enabled) {
@@ -298,12 +297,13 @@ export default function PublicView() {
   }, [username, pageProfile?.id]);
 
   const fetchTools = async (userId: string) => {
-    const { data, error } = await supabase.from('tools').select('*').eq('user_id', userId).order('created_at', { ascending: false });
+    const { data, error } = await fetchWithUltraCache<Tool[]>(
+      `public_tools_${userId}`,
+      () => supabase.from('tools').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
+      45000
+    );
     if (data && !error) {
       setTools(data);
-      try {
-        localStorage.setItem(`cached_public_tools_${username}`, JSON.stringify(data));
-      } catch {}
     }
   };
 

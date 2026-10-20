@@ -17,14 +17,42 @@ const nextConfig = {
   },
   images: {
     unoptimized: true,
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       { protocol: 'https', hostname: '**' },
       { protocol: 'http', hostname: '**' },
     ],
   },
   experimental: {
-    optimizePackageImports: ['lucide-react', 'recharts', 'motion', '@supabase/supabase-js'],
+    optimizePackageImports: [
+      'lucide-react',
+      'react-icons',
+      'recharts',
+      'motion',
+      '@supabase/supabase-js',
+      'browser-image-compression',
+    ],
   },
+  headers: async () => [
+    {
+      source: '/:all*(svg|jpg|jpeg|png|webp|avif|ico|woff|woff2|ttf)',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        },
+      ],
+    },
+    {
+      source: '/_next/static/:path*',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        },
+      ],
+    },
+  ],
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
