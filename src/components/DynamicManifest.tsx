@@ -34,7 +34,7 @@ export default function DynamicManifest({
       `Explore verified tools, direct WhatsApp link, exclusive resources, and digital assets curated by ${cleanUsername} on Pro Toolkits.`;
     const finalKeywords =
       seoKeywords ||
-      `${cleanUsername}, ${displayName}, verified toolkit, termux tools, developer resources, pro toolkits`;
+      `${cleanUsername}, ${displayName}, verified toolkit, termux tools, developer resources, mrsaqib, 242, mrsaqib 242, pro toolkits`;
     const currentUrl =
       typeof window !== 'undefined' ? window.location.href : `https://protoolkits.com/${username || ''}`;
 
@@ -101,7 +101,7 @@ export default function DynamicManifest({
     setMetaByProperty('og:description', finalDescription);
     setMetaByProperty('og:url', currentUrl);
     setMetaByProperty('og:type', 'profile');
-    setMetaByProperty('og:site_name', 'Pro Toolkits');
+    setMetaByProperty('og:site_name', 'Pro Toolkits by mrsaqib 242');
     if (icon) {
       setMetaByProperty('og:image', icon);
       setMetaByProperty('og:image:secure_url', icon);
@@ -130,6 +130,10 @@ export default function DynamicManifest({
         image: icon,
         url: currentUrl,
         sameAs: sameAsUrls,
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Pro Toolkits by mrsaqib 242',
       },
     };
 

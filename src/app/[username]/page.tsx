@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { supabase } from '@/src/lib/supabase';
+import { getBaseUrl, PRIMARY_AUTHOR, PRIMARY_PUBLISHER, DEFAULT_AVATAR } from '@/src/lib/seo-config';
 import PublicUserClient from './PublicUserClient';
 
 interface Props {
@@ -10,10 +11,11 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { username } = await params;
   const cleanUsername = username ? username.toLowerCase().trim() : '';
+  const baseUrl = getBaseUrl();
 
   if (cleanUsername === 'mradmin' || cleanUsername === 'super-admin' || cleanUsername === 'super-saqib-admin') {
     return {
-      title: 'Super Admin Control Center | Pro Toolkits',
+      title: 'Super Admin Control Center | Pro Toolkits by mrsaqib 242',
       description: 'Enterprise Security & System Control Center',
     };
   }
@@ -27,28 +29,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     if (profile) {
       const displayName = profile.name || profile.username;
+      const isMainCreator = cleanUsername === 'mrsaqib' || cleanUsername === 'saqib' || cleanUsername.includes('242');
       const title =
         profile.seo_title ||
-        `${displayName} (@${profile.username}) | Verified Pro Toolkit`;
+        (isMainCreator
+          ? `mrsaqib 242 (@${profile.username}) | Official Master Pro Toolkit`
+          : `${displayName} (@${profile.username}) | Verified Pro Toolkit (mrsaqib 242)`);
       const description =
         profile.seo_description ||
         profile.description ||
-        `Explore verified tools, direct WhatsApp link, and exclusive resources curated by @${profile.username} on Pro Toolkits.`;
-      const avatar =
-        profile.avatar_url ||
-        'https://i.pinimg.com/736x/db/5e/0a/db5e0ab846238200926faca796937740.jpg';
+        `Explore verified tools, direct WhatsApp link, and exclusive resources curated by @${profile.username} on Pro Toolkits (powered by mrsaqib 242).`;
+      const avatar = profile.avatar_url || DEFAULT_AVATAR;
       const keywords =
         profile.seo_keywords ||
-        `${profile.username}, verified toolkit, ${displayName}, free tools, termux tools, pro toolkits`;
+        `${profile.username}, verified toolkit, ${displayName}, free tools, termux tools, mrsaqib, 242, mrsaqib 242, pro toolkits`;
 
       return {
         title,
         description,
         keywords,
-        authors: [{ name: displayName }],
-        creator: displayName,
-        publisher: 'Pro Toolkits',
-        metadataBase: new URL('https://protoolkits.com'),
+        authors: [{ name: displayName }, PRIMARY_AUTHOR],
+        creator: isMainCreator ? 'mrsaqib 242' : displayName,
+        publisher: PRIMARY_PUBLISHER,
+        metadataBase: new URL(baseUrl),
         alternates: {
           canonical: `/${profile.username}`,
         },
@@ -60,7 +63,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           title,
           description,
           url: `/${profile.username}`,
-          siteName: 'Pro Toolkits',
+          siteName: 'Pro Toolkits by mrsaqib 242',
           images: [
             {
               url: avatar,
@@ -73,6 +76,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         },
         twitter: {
           card: 'summary_large_image',
+          site: '@mrsaqib242',
+          creator: isMainCreator ? '@mrsaqib242' : `@${profile.username}`,
           title,
           description,
           images: [avatar],
@@ -85,14 +90,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   // Fallback metadata if user not found or while loading
   return {
-    title: `@${cleanUsername} | Pro Toolkit Space`,
-    description: `Official digital toolkit space for @${cleanUsername}. Fast, verified tools and resources.`,
+    title: `@${cleanUsername} | Pro Toolkit Space (mrsaqib 242)`,
+    description: `Official digital toolkit space for @${cleanUsername}. Fast, verified tools and resources by mrsaqib 242.`,
   };
 }
 
 export default async function PublicUserPage({ params }: Props) {
   const { username } = await params;
   const cleanUsername = username ? username.toLowerCase().trim() : '';
+  const baseUrl = getBaseUrl();
 
   if (cleanUsername === 'mradmin' || cleanUsername === 'super-admin' || cleanUsername === 'super-saqib-admin') {
     redirect('/mradmin');
@@ -128,6 +134,11 @@ export default async function PublicUserPage({ params }: Props) {
           description: profile.description || 'Verified Toolkit Creator',
           image: profile.avatar_url,
           sameAs,
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Pro Toolkits by mrsaqib 242',
+          url: baseUrl,
         },
       };
     }
