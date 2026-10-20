@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 import { supabase } from '@/src/lib/supabase';
 import PublicUserClient from './PublicUserClient';
 
@@ -9,6 +10,13 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { username } = await params;
   const cleanUsername = username ? username.toLowerCase().trim() : '';
+
+  if (cleanUsername === 'mradmin' || cleanUsername === 'super-admin' || cleanUsername === 'super-saqib-admin') {
+    return {
+      title: 'Super Admin Control Center | Pro Toolkits',
+      description: 'Enterprise Security & System Control Center',
+    };
+  }
 
   try {
     const { data: profile } = await supabase
@@ -85,6 +93,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PublicUserPage({ params }: Props) {
   const { username } = await params;
   const cleanUsername = username ? username.toLowerCase().trim() : '';
+
+  if (cleanUsername === 'mradmin' || cleanUsername === 'super-admin' || cleanUsername === 'super-saqib-admin') {
+    redirect('/mradmin');
+  }
 
   let jsonLd: any = null;
   try {

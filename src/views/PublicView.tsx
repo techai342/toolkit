@@ -201,6 +201,10 @@ export default function PublicView() {
       }
 
       const cleanUsername = username.trim().replace(/^@/, '');
+      if (cleanUsername === 'mradmin' || cleanUsername === 'super-admin' || cleanUsername === 'super-saqib-admin') {
+        window.location.replace('/mradmin');
+        return;
+      }
       if (!pageProfile) {
         setLoading(true);
       }
