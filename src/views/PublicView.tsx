@@ -885,16 +885,16 @@ export default function PublicView() {
                                 {/* Overlay Indicator Gradients */}
                                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent opacity-60 group-hover:opacity-20 transition-opacity z-10"></div>
                                 
-                                <div className="absolute top-3 right-3 flex flex-col gap-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity translate-x-4 group-hover:translate-x-0 duration-300">
+                                <div className="absolute top-3 right-3 flex flex-col gap-2 z-20 opacity-95 md:opacity-0 md:group-hover:opacity-100 transition-opacity translate-x-0 md:translate-x-4 md:group-hover:translate-x-0 duration-300">
                                     <button 
                                        onClick={(e) => handleToolShare(e, tool)} 
-                                       className="w-8 h-8 flex items-center justify-center bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white hover:bg-white hover:text-black transition-all"
+                                       className="w-8 h-8 flex items-center justify-center bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-white hover:bg-white hover:text-black transition-all active:scale-90"
                                        title="Share Tool"
                                     >
                                         <Share2 className="w-4 h-4" />
                                     </button>
                                     {tool.is_locked && (
-                                       <div className="w-8 h-8 flex items-center justify-center bg-amber-500/20 backdrop-blur-md rounded-full border border-amber-500/40 text-amber-400">
+                                       <div className="w-8 h-8 flex items-center justify-center bg-amber-500/20 backdrop-blur-md rounded-full border border-amber-500/40 text-amber-400 shadow-sm animate-pulse">
                                           <Lock className="w-4 h-4" />
                                        </div>
                                     )}
@@ -1171,7 +1171,7 @@ export default function PublicView() {
             href={waUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#25D366] text-black shadow-[0_0_30px_rgba(37,211,102,0.5)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all group border-2 border-white/30 transform-gpu will-change-transform"
+            className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] right-5 sm:right-6 z-50 w-14 h-14 rounded-full bg-[#25D366] text-black shadow-[0_0_30px_rgba(37,211,102,0.5)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all group border-2 border-white/30 transform-gpu will-change-transform"
             title={`Chat with ${pageProfile.username} on WhatsApp`}
           >
             <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-[#0A0F1E] animate-ping"></span>

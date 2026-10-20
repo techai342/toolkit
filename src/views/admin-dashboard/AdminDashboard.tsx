@@ -2374,8 +2374,8 @@ export default function AdminDashboard() {
       <div
         className={`flex-1 flex flex-col animate-in fade-in duration-500 w-full relative pb-48 md:pb-12 ${isOwner ? "pt-20 sm:pt-24" : ""}`}
       >
-        <div className="mb-8 sm:mb-12 border-b border-white/10 pb-6 sm:pb-8 flex flex-col md:flex-row items-start justify-between gap-6 relative z-10 w-full overflow-hidden">
-          <div className="w-full md:w-auto">
+        <div className="mb-8 sm:mb-12 border-b border-white/10 pb-6 sm:pb-8 flex flex-col lg:flex-row items-start justify-between gap-6 relative z-10 w-full">
+          <div className="w-full lg:flex-1 min-w-0">
             <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-2 flex items-center gap-3 md:gap-4 overflow-hidden">
               <GlowWrapper
                 enabled={pageProfile.theme_profile_border}
@@ -2541,66 +2541,67 @@ export default function AdminDashboard() {
             )}
           </div>
           {isOwner && (
-            <div className="flex flex-col sm:flex-row gap-2 md:gap-3 w-full md:w-auto mt-4 md:mt-0 px-1">
-              {/* Primary Actions Row */}
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                <button
-                  onClick={openSettings}
-                  className="flex-1 sm:flex-none justify-center px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl bg-gradient-to-r from-purple-600/30 via-pink-600/30 to-emerald-600/30 border border-purple-500/40 hover:border-purple-400 text-white backdrop-blur-md transition-all shadow-[0_0_20px_rgba(168,85,247,0.25)] flex items-center gap-2 group hover:scale-[1.02] active:scale-95"
-                  title="Step-by-Step Toolkit Setup Wizard"
-                >
-                  <Sparkles className="w-4 h-4 text-purple-400 group-hover:rotate-12 transition-transform" />
-                  <span className="text-xs font-black uppercase tracking-widest bg-gradient-to-r from-white via-purple-200 to-emerald-200 bg-clip-text text-transparent">
-                    Setup Wizard
-                  </span>
-                </button>
+            <div className="flex items-center flex-wrap gap-2.5 sm:gap-3 shrink-0 mt-4 lg:mt-0 w-full lg:w-auto justify-start lg:justify-end">
+              {/* Setup Wizard */}
+              <button
+                onClick={openSettings}
+                className="px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl bg-gradient-to-r from-purple-600/30 via-pink-600/30 to-emerald-600/30 border border-purple-500/40 hover:border-purple-400 text-white backdrop-blur-md transition-all shadow-[0_0_20px_rgba(168,85,247,0.25)] flex items-center gap-2 group hover:scale-[1.02] active:scale-95 shrink-0 whitespace-nowrap"
+                title="Step-by-Step Toolkit Setup Wizard"
+              >
+                <Sparkles className="w-4 h-4 text-purple-400 group-hover:rotate-12 transition-transform" />
+                <span className="text-xs font-black uppercase tracking-widest bg-gradient-to-r from-white via-purple-200 to-emerald-200 bg-clip-text text-transparent">
+                  Setup Wizard
+                </span>
+              </button>
 
-                <button
-                  onClick={() => {
-                    const win = window.open(`/${pageProfile.username}`, "_blank");
-                    if (win) win.focus();
-                  }}
-                  className="flex-1 sm:flex-none justify-center px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl bg-emerald-600/20 border border-emerald-500/40 hover:bg-emerald-600/30 hover:border-emerald-500 text-emerald-400 backdrop-blur-md transition-all shadow-xl flex items-center gap-2 active:scale-95"
-                  title="Launch Public Page"
-                >
-                  <Globe className="w-4 h-4 md:w-5 md:h-5 shrink-0" />
-                  <span className="text-xs font-black uppercase tracking-widest">
-                    Launch
-                  </span>
-                </button>
-              </div>
+              {/* Launch Public Page */}
+              <button
+                onClick={() => {
+                  const win = window.open(`/${pageProfile.username}`, "_blank");
+                  if (win) win.focus();
+                }}
+                className="px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl bg-emerald-600/20 border border-emerald-500/40 hover:bg-emerald-600/30 hover:border-emerald-500 text-emerald-400 backdrop-blur-md transition-all shadow-xl flex items-center gap-2 active:scale-95 shrink-0 whitespace-nowrap"
+                title="Launch Public Page"
+              >
+                <Globe className="w-4 h-4 md:w-5 md:h-5 shrink-0" />
+                <span className="text-xs font-black uppercase tracking-widest">
+                  Launch
+                </span>
+              </button>
 
-              {/* Utility Actions Row */}
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                <label className="cursor-pointer flex-1 sm:flex-none justify-center bg-white/[0.05] border border-white/10 hover:border-purple-400 text-xs font-bold px-3 py-2.5 sm:px-4 sm:py-3 rounded-xl text-zinc-300 hover:text-purple-300 transition-all flex items-center gap-1.5 backdrop-blur-md shadow-sm whitespace-nowrap uppercase tracking-wider active:scale-95">
-                  <UploadCloud className="w-3.5 h-3.5 shrink-0" />
-                  <span>{uploading ? "..." : "Avatar"}</span>
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleDpUpload}
-                    ref={dpInputRef}
-                    disabled={uploading}
-                  />
-                </label>
+              {/* Avatar Upload */}
+              <label className="cursor-pointer bg-white/[0.05] border border-white/10 hover:border-purple-400 text-xs font-bold px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-xl text-zinc-300 hover:text-purple-300 transition-all flex items-center gap-1.5 backdrop-blur-md shadow-sm whitespace-nowrap uppercase tracking-wider active:scale-95 shrink-0">
+                <UploadCloud className="w-3.5 h-3.5 shrink-0" />
+                <span>{uploading ? "..." : "Avatar"}</span>
+                <input
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleDpUpload}
+                  ref={dpInputRef}
+                  disabled={uploading}
+                />
+              </label>
 
-                <button
-                  onClick={openSettings}
-                  className="p-2.5 sm:p-3 shrink-0 rounded-xl bg-white/[0.05] border border-white/10 hover:border-purple-400 hover:text-purple-300 text-zinc-300 backdrop-blur-md transition-all shadow-sm active:scale-95"
-                  title="Settings"
-                >
-                  <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
-                </button>
+              {/* Settings */}
+              <button
+                onClick={openSettings}
+                className="p-2.5 sm:p-3 shrink-0 rounded-xl bg-white/[0.05] border border-white/10 hover:border-purple-400 hover:text-purple-300 text-zinc-300 backdrop-blur-md transition-all shadow-sm active:scale-95"
+                title="Settings"
+              >
+                <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
 
-                <button
-                  onClick={handleSignOut}
-                  className="p-2.5 sm:p-3 shrink-0 rounded-xl bg-red-500/10 border border-red-500/20 hover:border-red-500 hover:text-red-400 text-red-300 backdrop-blur-md transition-all shadow-sm active:scale-95"
-                  title="Logout"
-                >
-                  <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
-                </button>
-              </div>
+              {/* Logout */}
+              <button
+                onClick={handleSignOut}
+                className="p-2.5 sm:p-3 shrink-0 rounded-xl bg-red-500/10 border border-red-500/20 hover:border-red-500 hover:text-red-400 text-red-300 backdrop-blur-md transition-all shadow-sm active:scale-95"
+                title="Logout"
+              >
+                <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
+
+              {/* Add Tool / Content */}
               <button
                 onClick={() => {
                   if (activeMainTab === "tools") openToolModal();
@@ -2612,9 +2613,9 @@ export default function AdminDashboard() {
                     setIsUploadModalOpen(true);
                   }
                 }}
-                className="hidden md:flex flex-1 sm:flex-none justify-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 border border-purple-400/50 text-white text-sm font-medium px-4 md:px-5 py-3 rounded-xl transition-all items-center gap-2 shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:-translate-y-0.5 whitespace-nowrap"
+                className="justify-center bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 border border-purple-400/50 text-white text-xs font-black uppercase tracking-widest px-4 md:px-5 py-2.5 sm:py-3 rounded-xl transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:-translate-y-0.5 whitespace-nowrap shrink-0 active:scale-95"
               >
-                <Plus className="w-4 h-4 md:w-5 md:h-5 shrink-0" />
+                <Plus className="w-4 h-4 shrink-0" />
                 <span>
                   {activeMainTab === "tools"
                     ? "Add Tool"
@@ -6241,7 +6242,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* 📱 Ultra-Sleek Mobile Bottom Floating Navigation Dock */}
-      <div className="md:hidden fixed bottom-5 left-1/2 -translate-x-1/2 w-[92%] max-w-sm z-[100] p-1.5 bg-[#0b0816]/90 backdrop-blur-2xl border border-white/15 rounded-[2rem] shadow-[0_15px_35px_rgba(0,0,0,0.7)] transform-gpu will-change-transform">
+      <div className="md:hidden fixed bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] left-1/2 -translate-x-1/2 w-[92%] max-w-sm z-[100] p-1.5 bg-[#0b0816]/90 backdrop-blur-2xl border border-white/15 rounded-[2rem] shadow-[0_15px_35px_rgba(0,0,0,0.7)] transform-gpu will-change-transform">
         <div className="w-full flex items-center justify-between px-2">
           {/* Tools */}
           <button

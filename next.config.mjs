@@ -9,6 +9,7 @@ const nextConfig = {
   reactStrictMode: false,
   compress: true,
   poweredByHeader: false,
+  transpilePackages: ['motion', 'motion-dom'],
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -28,9 +29,6 @@ const nextConfig = {
       'lucide-react',
       'react-icons',
       'recharts',
-      'motion',
-      '@supabase/supabase-js',
-      'browser-image-compression',
     ],
   },
   headers: async () => [

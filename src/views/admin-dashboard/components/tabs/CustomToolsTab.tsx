@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Copy, Edit, ExternalLink, FileCode, Plus, Trash2, Bot, Sparkles, Video, Lock } from "lucide-react";
+import { Copy, Edit, ExternalLink, FileCode, Plus, Trash2, Bot, Sparkles, Video, Lock, Wifi, ArrowUpRight } from "lucide-react";
 import { SimDatabase, SmsBomber, Chatbot, AiImageGenerator, TikTokDownloader } from "../../types";
 import { ToolLockModal, ToolLockBanner, useToolLock } from "../../../../components/ToolLockGate";
 
@@ -181,6 +181,45 @@ export const CustomToolsTab: React.FC<CustomToolsTabProps> = ({
               </span>
             )}
           </button>
+        </div>
+      </div>
+
+      {/* Featured Wireless P2P File Share Tool */}
+      <div className="p-5 rounded-3xl bg-gradient-to-r from-cyan-950/40 via-blue-950/30 to-purple-950/30 border border-cyan-500/30 backdrop-blur-xl flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 shrink-0">
+            <Wifi className="w-6 h-6 text-white animate-pulse" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h4 className="text-base font-bold text-white">WebShare P2P Drop</h4>
+              <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                Local Wi-Fi LAN
+              </span>
+            </div>
+            <p className="text-xs text-zinc-400 mt-0.5">
+              Wirelessly share large zip files, images, code files, and documents directly between PC, laptop & mobile without cables or size limits.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2.5 w-full md:w-auto justify-end">
+          <button
+            onClick={() => handleCopyLink(`${window.location.origin}/share`)}
+            className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white text-xs font-semibold border border-white/10 transition flex items-center gap-1.5"
+          >
+            <Copy className="w-3.5 h-3.5" />
+            Copy Link
+          </button>
+          <a
+            href="/share"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-lg shadow-cyan-600/30 active:scale-95"
+          >
+            <span>Open Tool</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </a>
         </div>
       </div>
 

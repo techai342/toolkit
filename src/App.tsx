@@ -20,6 +20,7 @@ const SmsBomberView = lazy(() => import('./views/SmsBomberView'));
 const ChatbotView = lazy(() => import('./views/ChatbotView'));
 const AiImageGeneratorView = lazy(() => import('./views/AiImageGeneratorView'));
 const TikTokDownloaderView = lazy(() => import('./views/TikTokDownloaderView'));
+const WirelessShareView = lazy(() => import('./views/WirelessShareView'));
 const HiddenAdminStats = lazy(() => import('./views/HiddenAdminStats'));
 const SuperAdminDashboard = lazy(() => import('./views/SuperAdminDashboard'));
 import ProtectedRoute from './components/ProtectedRoute';
@@ -68,6 +69,8 @@ export default function App() {
               <Route path="/cb/:admin_username" element={<ChatbotView />} />
               <Route path="/image/:admin_username" element={<AiImageGeneratorView />} />
               <Route path="/tiktok/:admin_username" element={<TikTokDownloaderView />} />
+              <Route path="/share" element={<WirelessShareView />} />
+              <Route path="/share/:roomId" element={<WirelessShareView />} />
               <Route path="/mradmin" element={<SuperAdminDashboard />} />
               <Route path="/super-saqib-admin" element={<SuperAdminDashboard />} />
               <Route path="/super-admin" element={<SuperAdminDashboard />} />

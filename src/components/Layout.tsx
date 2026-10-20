@@ -63,23 +63,35 @@ export default function Layout({ children, customBg }: { children: React.ReactNo
           </div>
         </div>
         
-        <div suppressHydrationWarning className="flex items-center">
+        <div suppressHydrationWarning className="flex items-center gap-3">
           {!mounted ? (
             <div className="h-9 w-24"></div>
-          ) : user ? (
-            <button 
-              onClick={handleSignOut}
-              className="px-4 py-2 sm:px-6 sm:py-2.5 rounded-full border border-purple-500/50 bg-purple-500/10 text-[10px] font-bold uppercase tracking-[0.2em] text-white hover:bg-purple-500 hover:shadow-[0_0_20px_rgba(168,85,247,0.6)] transition-all flex items-center gap-2 backdrop-blur-md"
-            >
-              <span className="hidden sm:inline">Terminate Session</span>
-              <span className="sm:hidden">Log Out</span>
-              <LogOut className="w-3 h-3" />
-            </button>
           ) : (
-            <div className="hidden md:flex gap-6 font-mono text-[10px] uppercase tracking-widest text-zinc-400">
-              <button onClick={() => navigate('/login')} className="hover:text-purple-400 transition-colors">Login</button>
-              <button onClick={() => navigate('/register')} className="hover:text-purple-400 transition-colors">Register</button>
-            </div>
+            <>
+              <button 
+                onClick={() => navigate('/share')}
+                className="px-3 py-1.5 rounded-full border border-cyan-500/40 bg-cyan-500/10 text-[10px] font-bold uppercase tracking-wider text-cyan-300 hover:bg-cyan-500/20 hover:text-white transition-all flex items-center gap-1.5 backdrop-blur-md"
+                title="Wireless P2P File & Code Share"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span>P2P Share</span>
+              </button>
+              {user ? (
+                <button 
+                  onClick={handleSignOut}
+                  className="px-4 py-2 sm:px-6 sm:py-2.5 rounded-full border border-purple-500/50 bg-purple-500/10 text-[10px] font-bold uppercase tracking-[0.2em] text-white hover:bg-purple-500 hover:shadow-[0_0_20px_rgba(168,85,247,0.6)] transition-all flex items-center gap-2 backdrop-blur-md"
+                >
+                  <span className="hidden sm:inline">Terminate Session</span>
+                  <span className="sm:hidden">Log Out</span>
+                  <LogOut className="w-3 h-3" />
+                </button>
+              ) : (
+                <div className="hidden md:flex gap-6 font-mono text-[10px] uppercase tracking-widest text-zinc-400">
+                  <button onClick={() => navigate('/login')} className="hover:text-purple-400 transition-colors">Login</button>
+                  <button onClick={() => navigate('/register')} className="hover:text-purple-400 transition-colors">Register</button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </nav>
