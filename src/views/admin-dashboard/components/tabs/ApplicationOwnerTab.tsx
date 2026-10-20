@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { 
   Sparkles, Shield, Mail, Phone, MapPin, Globe, CheckCircle2, 
   ExternalLink, Copy, Check, RefreshCw, Send, MessageCircle, 
-  Briefcase, Code2, Award, Terminal, Lock
+  Briefcase, Code2, Award, Lock
 } from 'lucide-react';
 import { 
   SiWhatsapp, 
-  SiGithub, 
   SiInstagram, 
   SiTiktok, 
   SiFacebook, 
@@ -122,15 +121,6 @@ export function ApplicationOwnerTab() {
       color: 'from-purple-600 to-indigo-600',
       border: 'border-purple-500/30',
       badge: 'Official Hub',
-    },
-    {
-      name: 'GitHub',
-      handle: '@mrsaqib242',
-      url: data.github || 'https://github.com/mrsaqib242',
-      icon: SiGithub,
-      color: 'from-zinc-700 to-zinc-900',
-      border: 'border-zinc-500/30',
-      badge: 'Code Repos',
     },
     {
       name: 'Instagram',
@@ -396,24 +386,6 @@ export function ApplicationOwnerTab() {
               </a>
             );
           })}
-        </div>
-      </div>
-
-      {/* Developer API & System Integration Note */}
-      <div className="p-6 rounded-2xl bg-black/40 border border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shrink-0">
-            <Terminal className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="text-xs font-bold text-white">Central API Integration Active</div>
-            <div className="text-[11px] text-zinc-400 font-mono">
-              GET https://mrsaqib242.vercel.app/api/public/contact
-            </div>
-          </div>
-        </div>
-        <div className="text-[11px] text-zinc-500 text-center md:text-right">
-          Official Master Documentation &amp; Live Contact Bridge for Pro-Toolkits Platform
         </div>
       </div>
     </div>
